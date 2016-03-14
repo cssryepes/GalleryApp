@@ -1,0 +1,8 @@
+<resources>
+    <string name="app_name">GalleryApp</string>
+
+    <!-- TODO: Remove or change this placeholder text -->
+    <string name="hello_blank_fragment">Hello blank fragment</string>
+    <string name="no_connectivity">You must check your connection</string>
+    <string name="title_activity_base">BaseActivity</string>
+</resources>
