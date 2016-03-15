@@ -4,6 +4,7 @@ import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.kogi.galleryapp.R;
@@ -11,12 +12,12 @@ import com.kogi.galleryapp.domain.entities.Feed;
 
 import java.util.List;
 
-public class GalleryRecyclerViewAdapter extends RecyclerView.Adapter<GalleryRecyclerViewAdapter.ViewHolder> {
+public class GridRecyclerViewAdapter extends RecyclerView.Adapter<GridRecyclerViewAdapter.ViewHolder> {
 
     private final List<Feed> mValues;
-    private final OnListFragmentInteractionListener mListener;
+    private final OnGridFragmentInteractionListener mListener;
 
-    public GalleryRecyclerViewAdapter(List<Feed> items, OnListFragmentInteractionListener listener) {
+    public GridRecyclerViewAdapter(List<Feed> items, OnGridFragmentInteractionListener listener) {
         mValues = items;
         mListener = listener;
     }
@@ -29,17 +30,16 @@ public class GalleryRecyclerViewAdapter extends RecyclerView.Adapter<GalleryRecy
     }
 
     @Override
-    public void onBindViewHolder(final ViewHolder holder, int position) {
+    public void onBindViewHolder(final ViewHolder holder, final int position) {
         holder.mItem = mValues.get(position);
-//        holder.mContentView.setText(mValues.get(position).content);
+        holder.mContentView.setText(mValues.get(position).getCaption());
+//        holder.mImageView.setImageBitmap(null);
 
         holder.mView.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                if (null != mListener) {
-                    // Notify the active callbacks interface (the activity, if the
-                    // fragment is attached to one) that an item has been selected.
-//                    mListener.onListFragmentInteraction(holder.mItem);
+                if (mListener != null) {
+                    mListener.onItemSelected(mValues.get(position));
                 }
             }
         });
@@ -52,12 +52,14 @@ public class GalleryRecyclerViewAdapter extends RecyclerView.Adapter<GalleryRecy
 
     public class ViewHolder extends RecyclerView.ViewHolder {
         public final View mView;
+        public final ImageView mImageView;
         public final TextView mContentView;
         public Feed mItem;
 
         public ViewHolder(View view) {
             super(view);
             mView = view;
+            mImageView = (ImageView) view.findViewById(R.id.image_view);
             mContentView = (TextView) view.findViewById(R.id.content);
         }
 

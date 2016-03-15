@@ -2,7 +2,9 @@ package com.kogi.galleryapp.ui.fragments;
 
 import android.content.Context;
 import android.os.Bundle;
+import android.os.Parcelable;
 import android.support.v4.app.Fragment;
+import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
@@ -15,33 +17,27 @@ import com.kogi.galleryapp.domain.entities.Feed;
 import java.util.ArrayList;
 import java.util.List;
 
-/**
- * A fragment representing a list of Items.
- * <p/>
- * Activities containing this fragment MUST implement the {@link OnListFragmentInteractionListener}
- * interface.
- */
-public class GridFeedFragment extends Fragment {
+public class GridFeedFragment extends Fragment implements SwipeRefreshLayout.OnRefreshListener {
 
-    // TODO: Customize parameter argument names
-    private static final String ARG_COLUMN_COUNT = "column-count";
-    // TODO: Customize parameters
-    private int mColumnCount = 2;
-    private OnListFragmentInteractionListener mListener;
+    private static final String FEED = "FEED";
+    private int mColumnCount = 3;
+    private OnGridFragmentInteractionListener mListener;
+    private GridRecyclerViewAdapter gridRecyclerViewAdapter;
+    private  SwipeRefreshLayout swipeRefreshLayout;
+    private List<Feed> mFeed;
 
-    /**
-     * Mandatory empty constructor for the fragment manager to instantiate the
-     * fragment (e.g. upon screen orientation changes).
-     */
     public GridFeedFragment() {
     }
 
-    // TODO: Customize parameter initialization
-    @SuppressWarnings("unused")
-    public static GridFeedFragment newInstance(int columnCount) {
+    public void notifyDataSetChanged() {
+        gridRecyclerViewAdapter.notifyDataSetChanged();
+        swipeRefreshLayout.setRefreshing(false);
+    }
+
+    public static GridFeedFragment newInstance(List<Feed> feed) {
         GridFeedFragment fragment = new GridFeedFragment();
         Bundle args = new Bundle();
-        args.putInt(ARG_COLUMN_COUNT, columnCount);
+        args.putParcelableArrayList(FEED, (ArrayList<? extends Parcelable>) feed);
         fragment.setArguments(args);
         return fragment;
     }
@@ -51,7 +47,7 @@ public class GridFeedFragment extends Fragment {
         super.onCreate(savedInstanceState);
 
         if (getArguments() != null) {
-            mColumnCount = getArguments().getInt(ARG_COLUMN_COUNT);
+            mFeed = getArguments().getParcelableArrayList(FEED);
         }
     }
 
@@ -61,13 +57,16 @@ public class GridFeedFragment extends Fragment {
         View view = inflater.inflate(R.layout.fragment_feed_list, container, false);
 
         // Set the adapter
-        if (view instanceof RecyclerView) {
+        if (view instanceof SwipeRefreshLayout) {
             Context context = view.getContext();
-            RecyclerView recyclerView = (RecyclerView) view;
-                recyclerView.setLayoutManager(new GridLayoutManager(context, mColumnCount));
+            gridRecyclerViewAdapter = new GridRecyclerViewAdapter(mFeed, mListener);
 
-            List<Feed> feed = new ArrayList<>();
-            recyclerView.setAdapter(new GalleryRecyclerViewAdapter(feed, mListener));
+            RecyclerView recyclerView = (RecyclerView) view.findViewById(R.id.list);
+            recyclerView.setLayoutManager(new GridLayoutManager(context, mColumnCount));
+            recyclerView.setAdapter(gridRecyclerViewAdapter);
+
+            swipeRefreshLayout = (SwipeRefreshLayout) view;
+            swipeRefreshLayout.setOnRefreshListener(this);
         }
         return view;
     }
@@ -76,8 +75,8 @@ public class GridFeedFragment extends Fragment {
     @Override
     public void onAttach(Context context) {
         super.onAttach(context);
-        if (context instanceof OnListFragmentInteractionListener) {
-            mListener = (OnListFragmentInteractionListener) context;
+        if (context instanceof OnGridFragmentInteractionListener) {
+            mListener = (OnGridFragmentInteractionListener) context;
         } else {
             throw new RuntimeException(context.toString()
                     + " must implement OnListFragmentInteractionListener");
@@ -88,6 +87,11 @@ public class GridFeedFragment extends Fragment {
     public void onDetach() {
         super.onDetach();
         mListener = null;
+    }
+
+    @Override
+    public void onRefresh() {
+        mListener.onRefreshGrid();
     }
 
 }

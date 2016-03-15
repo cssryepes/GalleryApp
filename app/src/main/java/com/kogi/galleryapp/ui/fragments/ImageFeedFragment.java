@@ -8,15 +8,12 @@ import android.view.View;
 import android.view.ViewGroup;
 
 import com.kogi.galleryapp.R;
-import com.kogi.galleryapp.domain.entities.Feed;
-import com.kogi.galleryapp.ui.FeedActivity;
-import com.kogi.galleryapp.ui.OnGalleryChangeListener;
 
 
 public class ImageFeedFragment extends Fragment {
 
     private int mPosition;
-    private OnGalleryChangeListener mListener;
+//    private OnGalleryChangeListener mListener;
 
     public ImageFeedFragment() {
     }
@@ -39,19 +36,19 @@ public class ImageFeedFragment extends Fragment {
     @Override
     public void onAttach(Context context) {
         super.onAttach(context);
-        if (context instanceof OnGalleryChangeListener) {
-            mListener = (OnGalleryChangeListener) context;
-        }
+//        if (context instanceof OnGalleryChangeListener) {
+//            mListener = (OnGalleryChangeListener) context;
+//        }
     }
 
     @Override
     public void onDetach() {
         super.onDetach();
-        mListener = null;
+//        mListener = null;
     }
 
     public void changeImage(int position) {
-        Feed feed = ((FeedActivity) getActivity()).getData().get(position);
+//        Feed feed = ((FeedActivity) getActivity()).getData().get(position);
 
     }
 

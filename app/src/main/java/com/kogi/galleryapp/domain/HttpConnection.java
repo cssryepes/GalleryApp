@@ -7,20 +7,16 @@ import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
-import java.io.UnsupportedEncodingException;
 import java.net.HttpURLConnection;
 import java.net.URL;
-import java.net.URLEncoder;
-import java.util.HashMap;
-import java.util.Map;
 
 public class HttpConnection {
 
-    public static String getResponse(String URL, HashMap<String, String> params) throws IOException {
+    public static String getResponse(String URL) throws IOException {
         String result = "";
         InputStream is;
 
-        URL url = new URL(URL + getQuery(params));
+        URL url = new URL(URL);
         HttpURLConnection urlConnection = (HttpURLConnection) url.openConnection();
         urlConnection.setReadTimeout(60000);
         urlConnection.setConnectTimeout(10000);
@@ -56,22 +52,4 @@ public class HttpConnection {
         return myBitmap;
     }
 
-    private static String getQuery(HashMap<String, String> params) throws UnsupportedEncodingException {
-        StringBuilder result = new StringBuilder();
-        boolean first = true;
-
-        if (params != null) {
-            for (Map.Entry<String, String> pair : params.entrySet()) {
-                if (first)
-                    first = false;
-                else
-                    result.append("&");
-
-                result.append(URLEncoder.encode(pair.getKey(), "UTF-8")).append("=").append(URLEncoder.encode(pair.getValue(), "UTF-8"));
-            }
-
-        }
-
-        return result.toString();
-    }
 }

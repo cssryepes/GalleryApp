@@ -1,8 +1,8 @@
 <resources>
     <string name="app_name">GalleryApp</string>
+    <string name="format_url">%1$s?%2$s=%3$s</string>
 
-    <!-- TODO: Remove or change this placeholder text -->
-    <string name="hello_blank_fragment">Hello blank fragment</string>
     <string name="no_connectivity">You must check your connection</string>
     <string name="title_activity_base">BaseActivity</string>
+    <string name="thumbnail">thumbnail</string>
 </resources>
