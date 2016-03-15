@@ -43,24 +43,23 @@ public class EntitiesFactory {
     private List<Image> getImagesFromJSONObject(JSONObject data) {
 
         List<Image> response = new ArrayList<>();
-        Image imageLow = new Image();
-        imageLow.setQuality(ImageQuality.LOW);
-        imageLow.setUrl(data.optJSONObject(imageLow.getQuality().getValue()).optString("url"));
-        response.add(imageLow);
 
-        Image imageThumbnail = new Image();
-        imageThumbnail.setQuality(ImageQuality.THUMBNAIL);
-        imageThumbnail.setUrl(data.optJSONObject(imageThumbnail.getQuality().getValue()).optString("url"));
-        response.add(imageThumbnail);
-
-        Image imageStandard = new Image();
-        imageStandard.setQuality(ImageQuality.STANDARD);
-        imageStandard.setUrl(data.optJSONObject(imageStandard.getQuality().getValue()).optString("url"));
-        response.add(imageStandard);
+        for (ImageQuality quality : ImageQuality.values()) {
+            Image image = getImageFromJSONObject(data, quality);
+            response.add(image);
+        }
 
         return response;
     }
 
+    private Image getImageFromJSONObject(JSONObject data, ImageQuality quality) {
+        Image image = new Image();
+        image.setQuality(quality);
+        image.setUrl(data.optJSONObject(quality.getValue()).optString("url"));
+        image.setWidth(data.optJSONObject(quality.getValue()).optInt("width"));
+        image.setHeight(data.optJSONObject(quality.getValue()).optInt("height"));
+        return image;
+    }
 
     private List<String> getTagsFromJSONObject(JSONObject data) throws JSONException {
         JSONArray tags = data.optJSONArray("tags");

@@ -1,5 +1,7 @@
 package com.kogi.galleryapp.domain.models;
 
+import android.graphics.Bitmap;
+import android.os.AsyncTask;
 import android.util.Log;
 
 import com.kogi.galleryapp.GalleryApp;
@@ -51,7 +53,7 @@ public class SocialMediaModel {
 
                 for (Feed item : feed) {
                     for (Image image : item.getImages()) {
-                        HttpConnection.getBitmapFromURL(image.getUrl());
+                        Bitmap bitmap = HttpConnection.getBitmapFromURL(image.getUrl());
 
                     }
                 }
@@ -78,5 +80,24 @@ public class SocialMediaModel {
         return false;
 
     }
+
+    private class DownloadFeed extends AsyncTask<Void, Void, Void> {
+
+        @Override
+        protected void onPreExecute() {
+            super.onPreExecute();
+        }
+
+        @Override
+        protected Void doInBackground(Void... params) {
+            return null;
+        }
+
+        @Override
+        protected void onPostExecute(Void aVoid) {
+            super.onPostExecute(aVoid);
+        }
+    }
+
 
 }
