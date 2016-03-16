@@ -15,18 +15,21 @@ import com.kogi.galleryapp.domain.enums.SocialMediaType;
 import com.kogi.galleryapp.domain.models.OnSocialMediaListener;
 import com.kogi.galleryapp.domain.models.SocialMediaModel;
 import com.kogi.galleryapp.ui.fragments.GridFeedFragment;
-import com.kogi.galleryapp.ui.fragments.OnGridFragmentInteractionListener;
+import com.kogi.galleryapp.ui.fragments.PreviewFeedFragment;
+import com.kogi.galleryapp.ui.listeners.OnFragmentInteractionListener;
+import com.kogi.galleryapp.ui.listeners.OnGridFragmentInteractionListener;
 
 import java.util.ArrayList;
 import java.util.List;
 
-public class FeedActivity extends BaseActivity implements OnSocialMediaListener, OnGridFragmentInteractionListener {
+public class FeedActivity extends BaseActivity implements OnSocialMediaListener, OnGridFragmentInteractionListener, OnFragmentInteractionListener {
 
     private List<Feed> mData;
     private SocialMediaModel mModel;
     private LinearLayout mContainer;
-    //    private ImageFeedFragment mImageFeedFragment;
     private GridFeedFragment mGridFeedFragment;
+    private PreviewFeedFragment mPreviewFeedFragment;
+    public static final String FEED = "FEED";
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -38,13 +41,6 @@ public class FeedActivity extends BaseActivity implements OnSocialMediaListener,
 
         mData = new ArrayList<>();
 
-//        FragmentManager manager = getSupportFragmentManager();
-//        mImageFeedFragment = new ImageFeedFragment();
-//        mGridFeedFragment = new GridFeedFragment();
-//        FragmentTransaction transaction = manager.beginTransaction();
-//        transaction.add(R.id.fragmentTop, mImageFeedFragment, "FragmentTop");
-//        transaction.add(R.id.fragmentBottom, mGridFeedFragment, "FragmentBottom");
-//        transaction.commit();
 
         mContainer = (LinearLayout) findViewById(R.id.container);
 
@@ -76,6 +72,7 @@ public class FeedActivity extends BaseActivity implements OnSocialMediaListener,
                 }
 
                 if (!mData.isEmpty()) {
+
                     FragmentManager manager = getSupportFragmentManager();
                     FragmentTransaction transaction = manager.beginTransaction();
 
@@ -84,18 +81,33 @@ public class FeedActivity extends BaseActivity implements OnSocialMediaListener,
                     if (fragment == null) {
                         //Add fragment
                         mGridFeedFragment = GridFeedFragment.newInstance(mData);
-                        transaction.add(R.id.fragmentBottom, mGridFeedFragment, "FragmentBottom").commit();
+                        transaction.add(R.id.fragmentBottom, mGridFeedFragment, "FragmentBottom");
 
                     } else {
                         if (fragment instanceof GridFeedFragment) {
                             mGridFeedFragment = (GridFeedFragment) fragment;
+                            mGridFeedFragment.notifyDataSetChanged();
+                            mPreviewFeedFragment.notifyDataSetChanged();
+                        }
+                    }
+
+
+                    fragment = manager.findFragmentByTag("FragmentBottom");
+                    if (fragment == null) {
+                        //Add fragment
+                        mPreviewFeedFragment = PreviewFeedFragment.newInstance(mData);
+                        transaction.add(R.id.fragmentTop, mPreviewFeedFragment, "FragmentTop").commit();
+
+                    } else {
+                        if (fragment instanceof  PreviewFeedFragment) {
+                            mPreviewFeedFragment = (PreviewFeedFragment) fragment;
+                            mPreviewFeedFragment.notifyDataSetChanged();
                             mGridFeedFragment.notifyDataSetChanged();
                         }
                     }
 
                 }
 
-//                printData((Bitmap) data);
             }
         }
     }
@@ -124,6 +136,11 @@ public class FeedActivity extends BaseActivity implements OnSocialMediaListener,
                     public void onClick(View v) {
                     }
                 }).show();
+
+    }
+
+    @Override
+    public void onSwipeItem(int position) {
 
     }
 }

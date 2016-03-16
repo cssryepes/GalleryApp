@@ -13,17 +13,21 @@ import android.view.ViewGroup;
 
 import com.kogi.galleryapp.R;
 import com.kogi.galleryapp.domain.entities.Feed;
+import com.kogi.galleryapp.ui.FeedActivity;
+import com.kogi.galleryapp.ui.fragments.adapters.GridRecyclerViewAdapter;
+import com.kogi.galleryapp.ui.listeners.OnFragmentInteractionListener;
+import com.kogi.galleryapp.ui.listeners.OnGridFragmentInteractionListener;
 
 import java.util.ArrayList;
 import java.util.List;
 
 public class GridFeedFragment extends Fragment implements SwipeRefreshLayout.OnRefreshListener {
 
-    private static final String FEED = "FEED";
     private int mColumnCount = 3;
-    private OnGridFragmentInteractionListener mListener;
+    private OnGridFragmentInteractionListener mGridListener;
+    private OnFragmentInteractionListener mInteractionListener;
     private GridRecyclerViewAdapter gridRecyclerViewAdapter;
-    private  SwipeRefreshLayout swipeRefreshLayout;
+    private SwipeRefreshLayout swipeRefreshLayout;
     private List<Feed> mFeed;
 
     public GridFeedFragment() {
@@ -37,7 +41,7 @@ public class GridFeedFragment extends Fragment implements SwipeRefreshLayout.OnR
     public static GridFeedFragment newInstance(List<Feed> feed) {
         GridFeedFragment fragment = new GridFeedFragment();
         Bundle args = new Bundle();
-        args.putParcelableArrayList(FEED, (ArrayList<? extends Parcelable>) feed);
+        args.putParcelableArrayList(FeedActivity.FEED, (ArrayList<? extends Parcelable>) feed);
         fragment.setArguments(args);
         return fragment;
     }
@@ -47,7 +51,7 @@ public class GridFeedFragment extends Fragment implements SwipeRefreshLayout.OnR
         super.onCreate(savedInstanceState);
 
         if (getArguments() != null) {
-            mFeed = getArguments().getParcelableArrayList(FEED);
+            mFeed = getArguments().getParcelableArrayList(FeedActivity.FEED);
         }
     }
 
@@ -59,7 +63,7 @@ public class GridFeedFragment extends Fragment implements SwipeRefreshLayout.OnR
         // Set the adapter
         if (view instanceof SwipeRefreshLayout) {
             Context context = view.getContext();
-            gridRecyclerViewAdapter = new GridRecyclerViewAdapter(mFeed, mListener);
+            gridRecyclerViewAdapter = new GridRecyclerViewAdapter(mFeed, mInteractionListener);
 
             RecyclerView recyclerView = (RecyclerView) view.findViewById(R.id.list);
             recyclerView.setLayoutManager(new GridLayoutManager(context, mColumnCount));
@@ -75,23 +79,24 @@ public class GridFeedFragment extends Fragment implements SwipeRefreshLayout.OnR
     @Override
     public void onAttach(Context context) {
         super.onAttach(context);
-        if (context instanceof OnGridFragmentInteractionListener) {
-            mListener = (OnGridFragmentInteractionListener) context;
+        if (context instanceof OnGridFragmentInteractionListener && context instanceof OnFragmentInteractionListener) {
+            mGridListener = (OnGridFragmentInteractionListener) context;
+            mInteractionListener = (OnFragmentInteractionListener) context;
         } else {
             throw new RuntimeException(context.toString()
-                    + " must implement OnListFragmentInteractionListener");
+                    + " must implement OnGridFragmentInteractionListener & OnFragmentInteractionListener");
         }
     }
 
     @Override
     public void onDetach() {
         super.onDetach();
-        mListener = null;
+        mGridListener = null;
     }
 
     @Override
     public void onRefresh() {
-        mListener.onRefreshGrid();
+        mGridListener.onRefreshGrid();
     }
 
 }

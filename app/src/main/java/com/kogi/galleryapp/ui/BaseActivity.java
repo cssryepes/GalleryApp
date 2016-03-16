@@ -7,6 +7,9 @@ import android.support.v7.app.AppCompatActivity;
 
 public class BaseActivity extends AppCompatActivity {
 
+//    FragmentManager manager = getSupportFragmentManager();
+//    FragmentTransaction transaction = manager.beginTransaction();
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
