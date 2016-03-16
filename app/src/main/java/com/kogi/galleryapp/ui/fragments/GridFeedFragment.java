@@ -35,7 +35,10 @@ public class GridFeedFragment extends Fragment implements SwipeRefreshLayout.OnR
 
     public void notifyDataSetChanged() {
         gridRecyclerViewAdapter.notifyDataSetChanged();
-        swipeRefreshLayout.setRefreshing(false);
+    }
+
+    public void setRefreshLayout(boolean refresh) {
+        swipeRefreshLayout.setRefreshing(refresh);
     }
 
     public void showFeed(int position) {

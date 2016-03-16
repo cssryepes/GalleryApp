@@ -6,6 +6,11 @@ import android.support.design.widget.Snackbar;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentTransaction;
+import android.support.v7.app.AppCompatActivity;
+import android.support.v7.widget.Toolbar;
+import android.view.Menu;
+import android.view.MenuInflater;
+import android.view.MenuItem;
 import android.view.View;
 import android.widget.LinearLayout;
 
@@ -25,7 +30,7 @@ import com.kogi.galleryapp.ui.listeners.OnGridFragmentInteractionListener;
 import java.util.ArrayList;
 import java.util.List;
 
-public class FeedActivity extends BaseActivity implements OnSocialMediaListener, OnGridFragmentInteractionListener, OnFragmentInteractionListener {
+public class FeedActivity extends AppCompatActivity implements OnSocialMediaListener, OnGridFragmentInteractionListener, OnFragmentInteractionListener {
 
     private List<Feed> mFeed;
     private SocialMediaModel mModel;
@@ -36,13 +41,18 @@ public class FeedActivity extends BaseActivity implements OnSocialMediaListener,
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_main);
+        setContentView(R.layout.activity_feed);
 
         mFeed = new ArrayList<>();
         mModel = new SocialMediaModel(this);
         mModel.getFeedSocialMedia(SocialMediaType.INSTAGRAM);
 
         mContainer = (LinearLayout) findViewById(R.id.container);
+
+        Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
+        setSupportActionBar(toolbar);
+
+        toolbar.setLogo(R.drawable.ic_home_white_48dp);
     }
 
     @Override
@@ -117,6 +127,7 @@ public class FeedActivity extends BaseActivity implements OnSocialMediaListener,
         }
         if (mGridFeedFragment != null) {
             mGridFeedFragment.notifyDataSetChanged();
+            mGridFeedFragment.setRefreshLayout(false);
         }
     }
 
@@ -133,6 +144,13 @@ public class FeedActivity extends BaseActivity implements OnSocialMediaListener,
     }
 
     @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        MenuInflater inflater = getMenuInflater();
+        inflater.inflate(R.menu.feed_menu, menu);
+        return true;
+    }
+
+    @Override
     public void onItemSelected(int position, ImageQuality quality) {
         if (quality.equals(ImageQuality.THUMBNAIL)) {
             if (mPreviewFeedFragment != null) {
@@ -140,7 +158,7 @@ public class FeedActivity extends BaseActivity implements OnSocialMediaListener,
             }
 
         } else if (quality.equals(ImageQuality.LOW)) {
-            Intent myIntent = new Intent(FeedActivity.this, TestActivity.class);
+            Intent myIntent = new Intent(FeedActivity.this, DetailFeedActivity.class);
             myIntent.putExtras(GalleryApp.getBundle(mFeed, position));
             startActivity(myIntent);
 
@@ -161,6 +179,19 @@ public class FeedActivity extends BaseActivity implements OnSocialMediaListener,
     public void onSwipeItem(int position) {
         if (mGridFeedFragment != null) {
             mGridFeedFragment.showFeed(position);
+        }
+    }
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        switch (item.getItemId()) {
+            case R.id.action_refresh:
+                mModel.getFeedSocialMedia(SocialMediaType.INSTAGRAM);
+                mGridFeedFragment.setRefreshLayout(true);
+                return true;
+
+            default:
+                return super.onOptionsItemSelected(item);
+
         }
     }
 }
