@@ -2,7 +2,6 @@ package com.kogi.galleryapp.ui;
 
 import android.content.Intent;
 import android.os.Bundle;
-import android.os.Parcelable;
 import android.support.design.widget.Snackbar;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
@@ -10,6 +9,7 @@ import android.support.v4.app.FragmentTransaction;
 import android.view.View;
 import android.widget.LinearLayout;
 
+import com.kogi.galleryapp.GalleryApp;
 import com.kogi.galleryapp.R;
 import com.kogi.galleryapp.domain.entities.Feed;
 import com.kogi.galleryapp.domain.enums.ImageQuality;
@@ -26,8 +26,6 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class FeedActivity extends BaseActivity implements OnSocialMediaListener, OnGridFragmentInteractionListener, OnFragmentInteractionListener {
-
-    public static final String FEED = "FEED";
 
     private List<Feed> mFeed;
     private SocialMediaModel mModel;
@@ -142,15 +140,8 @@ public class FeedActivity extends BaseActivity implements OnSocialMediaListener,
             }
 
         } else if (quality.equals(ImageQuality.LOW)) {
-//            if (mGridFeedFragment != null) {
-//                mGridFeedFragment.showFeed(position);
-//            }
-            //TODO Mostrar fragment detallado
-
             Intent myIntent = new Intent(FeedActivity.this, TestActivity.class);
-            Bundle args = new Bundle();
-            args.putParcelableArrayList(FeedActivity.FEED, (ArrayList<? extends Parcelable>) mFeed);
-            myIntent.putExtras(args);
+            myIntent.putExtras(GalleryApp.getBundle(mFeed, position));
             startActivity(myIntent);
 
         } else if (quality.equals(ImageQuality.STANDARD)) {
@@ -168,6 +159,8 @@ public class FeedActivity extends BaseActivity implements OnSocialMediaListener,
 
     @Override
     public void onSwipeItem(int position) {
-
+        if (mGridFeedFragment != null) {
+            mGridFeedFragment.showFeed(position);
+        }
     }
 }

@@ -2,22 +2,20 @@ package com.kogi.galleryapp.ui.fragments;
 
 import android.content.Context;
 import android.os.Bundle;
-import android.os.Parcelable;
 import android.support.v4.app.Fragment;
 import android.support.v4.view.ViewPager;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
+import com.kogi.galleryapp.GalleryApp;
 import com.kogi.galleryapp.R;
 import com.kogi.galleryapp.domain.entities.Feed;
 import com.kogi.galleryapp.domain.enums.ImageQuality;
-import com.kogi.galleryapp.ui.FeedActivity;
 import com.kogi.galleryapp.ui.fragments.adapters.CustomPagerAdapter;
 import com.kogi.galleryapp.ui.fragments.adapters.helpers.ZoomOutPageTransformer;
 import com.kogi.galleryapp.ui.listeners.OnFragmentInteractionListener;
 
-import java.util.ArrayList;
 import java.util.List;
 
 public class DetailFeedFragment extends Fragment implements ViewPager.OnPageChangeListener {
@@ -26,15 +24,14 @@ public class DetailFeedFragment extends Fragment implements ViewPager.OnPageChan
     private List<Feed> mFeed;
     private CustomPagerAdapter mCustomPagerAdapter;
     private ViewPager mViewPager;
+    private int mPosition;
 
     public DetailFeedFragment() {
     }
 
-    public static DetailFeedFragment newInstance(List<Feed> feed) {
+    public static DetailFeedFragment newInstance(List<Feed> feed, int position) {
         DetailFeedFragment fragment = new DetailFeedFragment();
-        Bundle args = new Bundle();
-        args.putParcelableArrayList(FeedActivity.FEED, (ArrayList<? extends Parcelable>) feed);
-        fragment.setArguments(args);
+        fragment.setArguments(GalleryApp.getBundle(feed, position));
         return fragment;
     }
 
@@ -42,7 +39,8 @@ public class DetailFeedFragment extends Fragment implements ViewPager.OnPageChan
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         if (getArguments() != null) {
-            mFeed = getArguments().getParcelableArrayList(FeedActivity.FEED);
+            mFeed = getArguments().getParcelableArrayList(GalleryApp.FEED);
+            mPosition = getArguments().getInt(GalleryApp.POSITION);
         }
     }
 
@@ -55,6 +53,7 @@ public class DetailFeedFragment extends Fragment implements ViewPager.OnPageChan
         mViewPager.setAdapter(mCustomPagerAdapter);
         mViewPager.setPageTransformer(true, new ZoomOutPageTransformer());
         mViewPager.addOnPageChangeListener(this);
+        mViewPager.setCurrentItem(mPosition);
         return view;
     }
 

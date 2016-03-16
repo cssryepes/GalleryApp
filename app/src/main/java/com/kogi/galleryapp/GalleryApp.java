@@ -4,11 +4,20 @@ import android.app.Application;
 import android.content.Context;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
+import android.os.Bundle;
+import android.os.Parcelable;
 import android.util.Log;
+
+import com.kogi.galleryapp.domain.entities.Feed;
+
+import java.util.ArrayList;
+import java.util.List;
 
 public class GalleryApp extends Application {
     private static GalleryApp instance = null;
-    private static final String TAG = "GALLERY_APP";
+    public static final String TAG = "GALLERY_APP";
+    public static final String FEED = "FEED";
+    public static final String POSITION = "POSITION";
 
     public static GalleryApp getInstance() {
         return instance;
@@ -18,6 +27,13 @@ public class GalleryApp extends Application {
     public void onCreate() {
         super.onCreate();
         instance = this;
+    }
+
+    public static Bundle getBundle(List<Feed> feed, int position) {
+        Bundle args = new Bundle();
+        args.putParcelableArrayList(FEED, (ArrayList<? extends Parcelable>) feed);
+        args.putInt(POSITION, position);
+        return args;
     }
 
     public boolean isNetworkAvailable() {

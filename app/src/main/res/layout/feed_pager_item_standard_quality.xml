@@ -18,7 +18,7 @@
             android:textColor="@color/colorAccent" />
 
         <TextView
-            android:id="@+id/author"
+            android:id="@+id/publish_date"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_marginLeft="10dp"
@@ -40,7 +40,7 @@
             android:textColor="@color/colorAccent" />
 
         <TextView
-            android:id="@+id/tag"
+            android:id="@+id/author"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:textColor="@color/colorDark"
@@ -62,7 +62,7 @@
             android:textColor="@color/colorAccent" />
 
         <TextView
-            android:id="@+id/publish_date"
+            android:id="@+id/tag"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:textColor="@color/colorDark"

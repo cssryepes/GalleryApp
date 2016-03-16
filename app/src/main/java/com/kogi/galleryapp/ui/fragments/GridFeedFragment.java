@@ -2,7 +2,6 @@ package com.kogi.galleryapp.ui.fragments;
 
 import android.content.Context;
 import android.os.Bundle;
-import android.os.Parcelable;
 import android.support.v4.app.Fragment;
 import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.widget.GridLayoutManager;
@@ -11,14 +10,13 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
+import com.kogi.galleryapp.GalleryApp;
 import com.kogi.galleryapp.R;
 import com.kogi.galleryapp.domain.entities.Feed;
-import com.kogi.galleryapp.ui.FeedActivity;
 import com.kogi.galleryapp.ui.fragments.adapters.GridRecyclerViewAdapter;
 import com.kogi.galleryapp.ui.listeners.OnFragmentInteractionListener;
 import com.kogi.galleryapp.ui.listeners.OnGridFragmentInteractionListener;
 
-import java.util.ArrayList;
 import java.util.List;
 
 public class GridFeedFragment extends Fragment implements SwipeRefreshLayout.OnRefreshListener {
@@ -55,9 +53,7 @@ public class GridFeedFragment extends Fragment implements SwipeRefreshLayout.OnR
 
     public static GridFeedFragment newInstance(List<Feed> feed) {
         GridFeedFragment fragment = new GridFeedFragment();
-        Bundle args = new Bundle();
-        args.putParcelableArrayList(FeedActivity.FEED, (ArrayList<? extends Parcelable>) feed);
-        fragment.setArguments(args);
+        fragment.setArguments(GalleryApp.getBundle(feed, 0));
         return fragment;
     }
 
@@ -66,7 +62,7 @@ public class GridFeedFragment extends Fragment implements SwipeRefreshLayout.OnR
         super.onCreate(savedInstanceState);
 
         if (getArguments() != null) {
-            mFeed = getArguments().getParcelableArrayList(FeedActivity.FEED);
+            mFeed = getArguments().getParcelableArrayList(GalleryApp.FEED);
         }
     }
 

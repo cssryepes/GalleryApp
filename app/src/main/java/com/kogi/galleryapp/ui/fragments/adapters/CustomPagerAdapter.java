@@ -9,6 +9,7 @@ import android.widget.LinearLayout;
 
 import com.kogi.galleryapp.GalleryApp;
 import com.kogi.galleryapp.R;
+import com.kogi.galleryapp.Utils;
 import com.kogi.galleryapp.domain.entities.Feed;
 import com.kogi.galleryapp.domain.enums.ImageQuality;
 import com.kogi.galleryapp.ui.fragments.adapters.helpers.DownloadImage;
@@ -71,9 +72,10 @@ public class CustomPagerAdapter extends PagerAdapter {
             for (int i = 0; i < tags.size(); i++) {
                 if (i != 0)
                     sb.append(", ");
-                sb.append(tags.get(i));
+                sb.append("#").append(tags.get(i));
             }
-            holder.mPublishDate.setText(feed.getCreatedTime());
+            long timestamp = Long.parseLong(feed.getCreatedTime());
+            holder.mPublishDate.setText(Utils.getDate(timestamp));
             holder.mTag.setText(sb.toString());
             if (feed.getUser() != null)
                 holder.mAuthor.setText(feed.getUser().getUsername());
