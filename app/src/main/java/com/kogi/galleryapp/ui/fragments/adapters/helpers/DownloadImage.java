@@ -1,8 +1,10 @@
 package com.kogi.galleryapp.ui.fragments.adapters.helpers;
 
+import android.graphics.Bitmap;
 import android.os.AsyncTask;
 import android.util.Log;
 
+import com.kogi.galleryapp.GalleryApp;
 import com.kogi.galleryapp.Utils;
 import com.kogi.galleryapp.domain.HttpConnection;
 import com.kogi.galleryapp.domain.entities.Image;
@@ -20,7 +22,18 @@ public class DownloadImage extends AsyncTask<ViewHolder, Void, ViewHolder> {
             List<Image> images = params[0].mFeed.getImages();
             for (Image image : images) {
                 if (image.getQuality().equals(params[0].mQuality)) {
-                    params[0].mBitmap = HttpConnection.getBitmapFromURL(image.getUrl());
+
+                    Bitmap bitmapFromMemCache = GalleryApp.getInstance().getBitmapFromMemCache(image.getUrl());
+
+                    if (bitmapFromMemCache != null) {
+                        params[0].mBitmap = bitmapFromMemCache;
+
+                    } else {
+                        params[0].mBitmap = HttpConnection.getBitmapFromURL(image.getUrl());
+                        GalleryApp.getInstance().addBitmapToMemoryCache(image.getUrl(), params[0].mBitmap);
+
+                    }
+
                     status = ResponseStatus.OK;
                     return params[0];
                 }
