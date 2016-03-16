@@ -20,28 +20,18 @@ import com.kogi.galleryapp.ui.listeners.OnFragmentInteractionListener;
 import java.util.ArrayList;
 import java.util.List;
 
-public class PreviewFeedFragment extends Fragment implements ViewPager.OnPageChangeListener {
+public class DetailFeedFragment extends Fragment implements ViewPager.OnPageChangeListener {
 
     private OnFragmentInteractionListener mListener;
     private List<Feed> mFeed;
     private CustomPagerAdapter mCustomPagerAdapter;
     private ViewPager mViewPager;
 
-    public PreviewFeedFragment() {
+    public DetailFeedFragment() {
     }
 
-    public void notifyDataSetChanged() {
-        mCustomPagerAdapter.notifyDataSetChanged();
-    }
-
-    public void showFeed(int position) {
-        if (mViewPager != null) {
-            mViewPager.setCurrentItem(position, true);
-        }
-    }
-
-    public static PreviewFeedFragment newInstance(List<Feed> feed) {
-        PreviewFeedFragment fragment = new PreviewFeedFragment();
+    public static DetailFeedFragment newInstance(List<Feed> feed) {
+        DetailFeedFragment fragment = new DetailFeedFragment();
         Bundle args = new Bundle();
         args.putParcelableArrayList(FeedActivity.FEED, (ArrayList<? extends Parcelable>) feed);
         fragment.setArguments(args);
@@ -59,8 +49,8 @@ public class PreviewFeedFragment extends Fragment implements ViewPager.OnPageCha
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
-        View view = inflater.inflate(R.layout.fragment_preview_feed, container, false);
-        mCustomPagerAdapter = new CustomPagerAdapter(mListener, mFeed, ImageQuality.LOW);
+        View view = inflater.inflate(R.layout.fragment_detail_feed, container, false);
+        mCustomPagerAdapter = new CustomPagerAdapter(mListener, mFeed, ImageQuality.STANDARD);
         mViewPager = (ViewPager) view.findViewById(R.id.pager);
         mViewPager.setAdapter(mCustomPagerAdapter);
         mViewPager.setPageTransformer(true, new ZoomOutPageTransformer());
@@ -84,7 +74,6 @@ public class PreviewFeedFragment extends Fragment implements ViewPager.OnPageCha
     public void onDetach() {
         super.onDetach();
         mListener = null;
-        mViewPager.clearOnPageChangeListeners();
     }
 
     @Override

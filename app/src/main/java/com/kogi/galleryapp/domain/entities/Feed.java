@@ -11,7 +11,7 @@ public class Feed implements Parcelable {
     private String id;
     private String caption;
     private String link;
-    private String createdTime;
+    private String createdTime; //timestamp
     private List<String> tags;
     private List<Image> images;
     private User user;

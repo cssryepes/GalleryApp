@@ -10,7 +10,7 @@ import android.widget.LinearLayout;
 
 import com.kogi.galleryapp.R;
 import com.kogi.galleryapp.domain.entities.Feed;
-import com.kogi.galleryapp.domain.enums.FeedDetail;
+import com.kogi.galleryapp.domain.enums.ImageQuality;
 import com.kogi.galleryapp.domain.enums.ResponseStatus;
 import com.kogi.galleryapp.domain.enums.SocialMediaType;
 import com.kogi.galleryapp.domain.models.OnSocialMediaListener;
@@ -74,47 +74,53 @@ public class FeedActivity extends BaseActivity implements OnSocialMediaListener,
                 }
 
                 if (!mData.isEmpty()) {
-
-                    FragmentManager manager = getSupportFragmentManager();
-                    FragmentTransaction transaction = manager.beginTransaction();
-
-                    //Remove last fragment
-                    Fragment fragment = manager.findFragmentByTag("FragmentBottom");
-                    if (fragment == null) {
-                        //Add fragment
-                        mGridFeedFragment = GridFeedFragment.newInstance(mData);
-                        transaction.add(R.id.fragmentBottom, mGridFeedFragment, "FragmentBottom");
-
-                    } else {
-                        if (fragment instanceof GridFeedFragment) {
-                            mGridFeedFragment = (GridFeedFragment) fragment;
-                            notifyDataSetChanged();
-                        }
-                    }
-
-
-                    fragment = manager.findFragmentByTag("FragmentBottom");
-                    if (fragment == null) {
-                        //Add fragment
-                        mPreviewFeedFragment = PreviewFeedFragment.newInstance(mData);
-                        transaction.add(R.id.fragmentTop, mPreviewFeedFragment, "FragmentTop").commit();
-
-                    } else {
-                        if (fragment instanceof PreviewFeedFragment) {
-                            mPreviewFeedFragment = (PreviewFeedFragment) fragment;
-                            notifyDataSetChanged();
-                        }
-                    }
-
+                    setFragments();
                 }
 
             }
         }
     }
 
+    private void setFragments() {
+        FragmentManager manager = getSupportFragmentManager();
+        FragmentTransaction transaction = manager.beginTransaction();
+
+        //Remove last fragment
+        Fragment fragment = manager.findFragmentByTag("FragmentBottom");
+        if (fragment == null) {
+            //Add fragment
+            mGridFeedFragment = GridFeedFragment.newInstance(mData);
+            transaction.add(R.id.fragmentBottom, mGridFeedFragment, "FragmentBottom");
+
+        } else {
+            if (fragment instanceof GridFeedFragment) {
+                mGridFeedFragment = (GridFeedFragment) fragment;
+                notifyDataSetChanged();
+            }
+        }
+
+
+        fragment = manager.findFragmentByTag("FragmentBottom");
+        if (fragment == null) {
+            //Add fragment
+            mPreviewFeedFragment = PreviewFeedFragment.newInstance(mData);
+            transaction.add(R.id.fragmentTop, mPreviewFeedFragment, "FragmentTop").commit();
+
+        } else {
+            if (fragment instanceof PreviewFeedFragment) {
+                mPreviewFeedFragment = (PreviewFeedFragment) fragment;
+                notifyDataSetChanged();
+            }
+        }
+    }
+
     private void notifyDataSetChanged() {
-        mPreviewFeedFragment.notifyDataSetChanged();
-        mGridFeedFragment.notifyDataSetChanged();
+        if (mPreviewFeedFragment != null) {
+            mPreviewFeedFragment.notifyDataSetChanged();
+        }
+        if (mGridFeedFragment != null) {
+            mGridFeedFragment.notifyDataSetChanged();
+        }
     }
 
 
@@ -130,14 +136,19 @@ public class FeedActivity extends BaseActivity implements OnSocialMediaListener,
     }
 
     @Override
-    public void onItemSelected(int position, FeedDetail detail) {
-        if (detail.equals(FeedDetail.THUMBNAIL)) {
-            mPreviewFeedFragment.showFeed(position);
+    public void onItemSelected(int position, ImageQuality quality) {
+        if (quality.equals(ImageQuality.THUMBNAIL)) {
+            if (mPreviewFeedFragment != null) {
+                mPreviewFeedFragment.showFeed(position);
+            }
 
-        } else if (detail.equals(FeedDetail.LOW)) {
-            mGridFeedFragment.showFeed(position);
+        } else if (quality.equals(ImageQuality.LOW)) {
+            if (mGridFeedFragment != null) {
+                mGridFeedFragment.showFeed(position);
+            }
+            //TODO Mostrar fragment detallado
 
-        } else if (detail.equals(FeedDetail.STANDARD)) {
+        } else if (quality.equals(ImageQuality.STANDARD)) {
 
         } else {
             Snackbar.make(mContainer, position, Snackbar.LENGTH_INDEFINITE)

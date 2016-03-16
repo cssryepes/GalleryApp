@@ -42,6 +42,11 @@ public class GridFeedFragment extends Fragment implements SwipeRefreshLayout.OnR
 
     public void showFeed(int position) {
         if (gridLayoutManager != null) {
+            int positionTemp = gridRecyclerViewAdapter.selectedPosition;
+            gridRecyclerViewAdapter.selectedPosition = position;
+            gridRecyclerViewAdapter.notifyItemChanged(positionTemp);
+            gridRecyclerViewAdapter.notifyItemChanged(position);
+
             gridLayoutManager.scrollToPosition(position);
             gridLayoutManager.smoothScrollToPosition(recyclerView,
                     new RecyclerView.State(), position);
