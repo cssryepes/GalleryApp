@@ -1,86 +1,51 @@
 package com.kogi.galleryapp.ui;
 
+import android.annotation.SuppressLint;
 import android.content.Intent;
 import android.os.Bundle;
-import android.support.v4.app.FragmentManager;
-import android.support.v4.app.FragmentTransaction;
-import android.support.v7.app.ActionBar;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
+import android.webkit.WebSettings;
+import android.webkit.WebView;
+import android.webkit.WebViewClient;
 
 import com.kogi.galleryapp.GalleryApp;
 import com.kogi.galleryapp.R;
 import com.kogi.galleryapp.domain.entities.Feed;
 import com.kogi.galleryapp.domain.entities.Image;
 import com.kogi.galleryapp.domain.enums.ImageQuality;
-import com.kogi.galleryapp.ui.fragments.DetailFeedFragment;
-import com.kogi.galleryapp.ui.listeners.OnFragmentInteractionListener;
 
 import java.util.List;
 
-public class DetailFeedActivity extends AppCompatActivity implements OnFragmentInteractionListener {
+public class WebActivity extends AppCompatActivity {
 
-    private List<Feed> mFeed;
-    private int mPosition;
-    private ActionBar mActionBar;
+    private Feed mFeed;
 
+    @SuppressLint("SetJavaScriptEnabled")
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_feed_detail);
+        setContentView(R.layout.activity_web);
 
         Bundle extras = getIntent().getExtras();
         if (extras != null) {
-            mFeed = extras.getParcelableArrayList(GalleryApp.FEED);
-            mPosition = extras.getInt(GalleryApp.POSITION);
+            mFeed = extras.getParcelable(GalleryApp.FEED);
         }
 
-        FragmentManager manager = getSupportFragmentManager();
-        FragmentTransaction transaction = manager.beginTransaction();
-        DetailFeedFragment detail = DetailFeedFragment.newInstance(mFeed, mPosition);
-        transaction.add(R.id.full_fragment, detail, "FullFragment");
-        transaction.commit();
-
+        WebView webView= (WebView) findViewById(R.id.web_view);
+        WebSettings webSettings = webView.getSettings();
+        webSettings.setJavaScriptEnabled(true);
+        webView.setWebViewClient(new WebViewClient());
+        webView.loadUrl(mFeed.getLink());
 
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
 
-        mActionBar = getSupportActionBar();
-        if (mActionBar != null) {
-            mActionBar.setDisplayHomeAsUpEnabled(true);
-            mActionBar.setTitle( mFeed.get(mPosition).getCaption());
-        }
-
+        toolbar.setLogo(R.drawable.ic_search_white_48dp);
     }
-
-    @Override
-    protected void onResume() {
-        super.onResume();
-    }
-
-    @Override
-    public void onItemSelected(int position, ImageQuality quality) {
-        if (mPosition == position) {
-            mPosition = position;
-            Intent myIntent = new Intent(DetailFeedActivity.this, WebActivity.class);
-            myIntent.putExtras(GalleryApp.getBundle(mFeed.get(position)));
-            startActivity(myIntent);
-
-        } else {
-            mPosition = position;
-            if (mActionBar != null) {
-                mActionBar.setTitle( mFeed.get(mPosition).getCaption());
-            }
-        }
-    }
-
-    @Override
-    public void onSwipeItem(int position) {
-    }
-
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
@@ -102,9 +67,10 @@ public class DetailFeedActivity extends AppCompatActivity implements OnFragmentI
         }
     }
 
+
     private void shareContent() {
         String imageUrl = null;
-        List<Image> images = mFeed.get(mPosition).getImages();
+        List<Image> images = mFeed.getImages();
         for (Image image : images) {
             if (image.getQuality().equals(ImageQuality.STANDARD))
                 imageUrl = image.getUrl();
