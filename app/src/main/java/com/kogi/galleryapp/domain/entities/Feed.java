@@ -4,6 +4,8 @@ package com.kogi.galleryapp.domain.entities;
 import android.os.Parcel;
 import android.os.Parcelable;
 
+import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 
 public class Feed implements Parcelable {
@@ -28,6 +30,8 @@ public class Feed implements Parcelable {
         createdTime = in.readString();
         tags = in.createStringArrayList();
         likes = in.readLong();
+        user = in.readParcelable(User.class.getClassLoader());
+        images = new ArrayList<>(Arrays.asList(in.createTypedArray(Image.CREATOR)));
     }
 
     public static final Creator<Feed> CREATOR = new Creator<Feed>() {
@@ -55,6 +59,9 @@ public class Feed implements Parcelable {
         dest.writeString(createdTime);
         dest.writeStringList(tags);
         dest.writeLong(likes);
+        dest.writeParcelable(user, flags);
+        Parcelable[] array = new Parcelable[images.size()];
+        dest.writeTypedArray( images.toArray(array),0);
     }
 
     public String getId() {

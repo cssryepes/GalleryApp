@@ -22,6 +22,7 @@
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_marginLeft="10dp"
+            android:textColor="@color/colorDark"
             android:layout_weight="1"
             android:text="@string/publish_date" />
     </LinearLayout>
@@ -42,6 +43,7 @@
             android:id="@+id/tag"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
+            android:textColor="@color/colorDark"
             android:layout_marginLeft="10dp"
             android:layout_weight="1"
             android:text="@string/author" />
@@ -63,6 +65,7 @@
             android:id="@+id/publish_date"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
+            android:textColor="@color/colorDark"
             android:layout_marginLeft="10dp"
             android:layout_weight="1"
             android:text="@string/tag" />
