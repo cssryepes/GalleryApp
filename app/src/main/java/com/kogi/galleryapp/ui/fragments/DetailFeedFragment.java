@@ -8,8 +8,8 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
-import com.kogi.galleryapp.GalleryApp;
 import com.kogi.galleryapp.R;
+import com.kogi.galleryapp.Utils;
 import com.kogi.galleryapp.domain.entities.Feed;
 import com.kogi.galleryapp.domain.enums.ImageQuality;
 import com.kogi.galleryapp.ui.fragments.adapters.CustomPagerAdapter;
@@ -31,7 +31,7 @@ public class DetailFeedFragment extends Fragment implements ViewPager.OnPageChan
 
     public static DetailFeedFragment newInstance(List<Feed> feed, int position) {
         DetailFeedFragment fragment = new DetailFeedFragment();
-        fragment.setArguments(GalleryApp.getBundle(feed, position));
+        fragment.setArguments(Utils.getBundle(feed, position));
         return fragment;
     }
 
@@ -39,8 +39,8 @@ public class DetailFeedFragment extends Fragment implements ViewPager.OnPageChan
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         if (getArguments() != null) {
-            mFeed = getArguments().getParcelableArrayList(GalleryApp.FEED);
-            mPosition = getArguments().getInt(GalleryApp.POSITION);
+            mFeed = getArguments().getParcelableArrayList(Utils.FEED);
+            mPosition = getArguments().getInt(Utils.POSITION);
         }
     }
 

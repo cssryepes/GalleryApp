@@ -4,20 +4,21 @@ import android.app.Application;
 import android.content.Context;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
-import android.os.Bundle;
-import android.os.Parcelable;
-import android.util.Log;
+import android.os.AsyncTask;
 
-import com.kogi.galleryapp.domain.entities.Feed;
+import com.jakewharton.disklrucache.DiskLruCache;
 
-import java.util.ArrayList;
-import java.util.List;
+import java.io.File;
+import java.io.IOException;
 
 public class GalleryApp extends Application {
     private static GalleryApp instance = null;
-    public static final String TAG = "GALLERY_APP";
-    public static final String FEED = "FEED";
-    public static final String POSITION = "POSITION";
+    private DiskLruCache mDiskLruCache;
+    private final Object mDiskCacheLock = new Object();
+    private boolean mDiskCacheStarting = true;
+    private static final int DISK_CACHE_SIZE = 1024 * 1024 * 10; // 10MB
+    private static final String DISK_CACHE_SUBDIR = "thumbnails";
+
 
     public static GalleryApp getInstance() {
         return instance;
@@ -27,13 +28,8 @@ public class GalleryApp extends Application {
     public void onCreate() {
         super.onCreate();
         instance = this;
-    }
-
-    public static Bundle getBundle(List<Feed> feed, int position) {
-        Bundle args = new Bundle();
-        args.putParcelableArrayList(FEED, (ArrayList<? extends Parcelable>) feed);
-        args.putInt(POSITION, position);
-        return args;
+        File cacheDir = getDiskCacheDir(this, DISK_CACHE_SUBDIR);
+        new InitDiskCacheTask().execute(cacheDir);
     }
 
     public boolean isNetworkAvailable() {
@@ -43,22 +39,46 @@ public class GalleryApp extends Application {
         return netInfo != null && netInfo.isConnectedOrConnecting();
     }
 
-    public static void print(int type, String message) {
-        int maxLogSize = 4000;
-        for(int i = 0; i <= message.length() / maxLogSize; i++) {
-            int start = i * maxLogSize;
-            int end = (i+1) * maxLogSize;
-            end = end > message.length() ? message.length() : end;
-            switch (type) {
-                case Log.DEBUG:
-                    Log.d(TAG, message.substring(start, end));
-                    break;
-                case Log.ERROR:
-                    Log.e(TAG, message.substring(start, end));
-                    break;
-                default:
-                    break;
+    // Creates a unique subdirectory of the designated app cache directory. Tries to use external
+// but if not mounted, falls back on internal storage.
+    public File getDiskCacheDir(Context context, String uniqueName) {
+        // Check if media is mounted or storage is built-in, if so, try and use external cache dir
+        // otherwise use internal cache dir
+        final String cachePath =
+                context.getCacheDir().getPath();
+
+        return new File(cachePath + File.separator + uniqueName);
+    }
+
+    public DiskLruCache.Snapshot getBitmapFromDiskCache(String key) throws IOException {
+        synchronized (mDiskCacheLock) {
+            // Wait while disk cache is started from background thread
+            while (mDiskCacheStarting) {
+                try {
+                    mDiskCacheLock.wait();
+                } catch (InterruptedException e) {
+                }
             }
+            if (mDiskLruCache != null) {
+                return mDiskLruCache.get(key);
+            }
+        }
+        return null;
+    }
+
+    public class InitDiskCacheTask extends AsyncTask<File, Void, Void> {
+        @Override
+        protected Void doInBackground(File... params) {
+            synchronized (mDiskCacheLock) {
+                File cacheDir = params[0];
+                try {
+                    mDiskLruCache = DiskLruCache.open(cacheDir, 0, 0, DISK_CACHE_SIZE);
+                    mDiskCacheStarting = false; // Finished initialization
+                    mDiskCacheLock.notifyAll(); // Wake any waiting threads
+                } catch (IOException e) {
+                }
+            }
+            return null;
         }
     }
 }

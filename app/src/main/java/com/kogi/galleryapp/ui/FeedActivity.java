@@ -14,8 +14,8 @@ import android.view.MenuItem;
 import android.view.View;
 import android.widget.LinearLayout;
 
-import com.kogi.galleryapp.GalleryApp;
 import com.kogi.galleryapp.R;
+import com.kogi.galleryapp.Utils;
 import com.kogi.galleryapp.domain.entities.Feed;
 import com.kogi.galleryapp.domain.enums.ImageQuality;
 import com.kogi.galleryapp.domain.enums.ResponseStatus;
@@ -159,7 +159,7 @@ public class FeedActivity extends AppCompatActivity implements OnSocialMediaList
 
         } else if (quality.equals(ImageQuality.LOW)) {
             Intent myIntent = new Intent(FeedActivity.this, DetailFeedActivity.class);
-            myIntent.putExtras(GalleryApp.getBundle(mFeed, position));
+            myIntent.putExtras(Utils.getBundle(mFeed, position));
             startActivity(myIntent);
 
         } else if (quality.equals(ImageQuality.STANDARD)) {

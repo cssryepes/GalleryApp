@@ -8,8 +8,8 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
-import com.kogi.galleryapp.GalleryApp;
 import com.kogi.galleryapp.R;
+import com.kogi.galleryapp.Utils;
 import com.kogi.galleryapp.domain.entities.Feed;
 import com.kogi.galleryapp.domain.enums.ImageQuality;
 import com.kogi.galleryapp.ui.fragments.adapters.CustomPagerAdapter;
@@ -42,7 +42,7 @@ public class PreviewFeedFragment extends Fragment implements ViewPager.OnPageCha
 
     public static PreviewFeedFragment newInstance(List<Feed> feed) {
         PreviewFeedFragment fragment = new PreviewFeedFragment();
-        fragment.setArguments(GalleryApp.getBundle(feed, 0));
+        fragment.setArguments(Utils.getBundle(feed, 0));
         return fragment;
     }
 
@@ -50,7 +50,7 @@ public class PreviewFeedFragment extends Fragment implements ViewPager.OnPageCha
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         if (getArguments() != null) {
-            mFeed = getArguments().getParcelableArrayList(GalleryApp.FEED);
+            mFeed = getArguments().getParcelableArrayList(Utils.FEED);
         }
     }
 

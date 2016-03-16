@@ -10,8 +10,8 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
-import com.kogi.galleryapp.GalleryApp;
 import com.kogi.galleryapp.R;
+import com.kogi.galleryapp.Utils;
 import com.kogi.galleryapp.domain.entities.Feed;
 import com.kogi.galleryapp.ui.fragments.adapters.GridRecyclerViewAdapter;
 import com.kogi.galleryapp.ui.listeners.OnFragmentInteractionListener;
@@ -56,7 +56,7 @@ public class GridFeedFragment extends Fragment implements SwipeRefreshLayout.OnR
 
     public static GridFeedFragment newInstance(List<Feed> feed) {
         GridFeedFragment fragment = new GridFeedFragment();
-        fragment.setArguments(GalleryApp.getBundle(feed, 0));
+        fragment.setArguments(Utils.getBundle(feed, 0));
         return fragment;
     }
 
@@ -65,7 +65,7 @@ public class GridFeedFragment extends Fragment implements SwipeRefreshLayout.OnR
         super.onCreate(savedInstanceState);
 
         if (getArguments() != null) {
-            mFeed = getArguments().getParcelableArrayList(GalleryApp.FEED);
+            mFeed = getArguments().getParcelableArrayList(Utils.FEED);
         }
     }
 

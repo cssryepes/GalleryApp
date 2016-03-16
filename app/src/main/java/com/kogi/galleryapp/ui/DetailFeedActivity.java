@@ -11,8 +11,8 @@ import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
 
-import com.kogi.galleryapp.GalleryApp;
 import com.kogi.galleryapp.R;
+import com.kogi.galleryapp.Utils;
 import com.kogi.galleryapp.domain.entities.Feed;
 import com.kogi.galleryapp.domain.entities.Image;
 import com.kogi.galleryapp.domain.enums.ImageQuality;
@@ -34,8 +34,8 @@ public class DetailFeedActivity extends AppCompatActivity implements OnFragmentI
 
         Bundle extras = getIntent().getExtras();
         if (extras != null) {
-            mFeed = extras.getParcelableArrayList(GalleryApp.FEED);
-            mPosition = extras.getInt(GalleryApp.POSITION);
+            mFeed = extras.getParcelableArrayList(Utils.FEED);
+            mPosition = extras.getInt(Utils.POSITION);
         }
 
         FragmentManager manager = getSupportFragmentManager();
@@ -66,7 +66,7 @@ public class DetailFeedActivity extends AppCompatActivity implements OnFragmentI
         if (mPosition == position) {
             mPosition = position;
             Intent myIntent = new Intent(DetailFeedActivity.this, WebActivity.class);
-            myIntent.putExtras(GalleryApp.getBundle(mFeed.get(position)));
+            myIntent.putExtras(Utils.getBundle(mFeed.get(position)));
             startActivity(myIntent);
 
         } else {

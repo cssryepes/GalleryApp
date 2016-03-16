@@ -14,6 +14,7 @@ import android.webkit.WebViewClient;
 
 import com.kogi.galleryapp.GalleryApp;
 import com.kogi.galleryapp.R;
+import com.kogi.galleryapp.Utils;
 import com.kogi.galleryapp.domain.entities.Feed;
 import com.kogi.galleryapp.domain.entities.Image;
 import com.kogi.galleryapp.domain.enums.ImageQuality;
@@ -32,7 +33,7 @@ public class WebActivity extends AppCompatActivity {
 
         Bundle extras = getIntent().getExtras();
         if (extras != null) {
-            mFeed = extras.getParcelable(GalleryApp.FEED);
+            mFeed = extras.getParcelable(Utils.FEED);
         }
 
         WebView webView= (WebView) findViewById(R.id.web_view);
