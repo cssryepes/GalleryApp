@@ -22,32 +22,40 @@ public class CustomPagerAdapter extends PagerAdapter {
     private final LayoutInflater mLayoutInflater;
     private final OnFragmentInteractionListener mInteractionListener;
     private final ImageQuality mQuality;
- 
+
     public CustomPagerAdapter(OnFragmentInteractionListener interactionListener, List<Feed> feed, ImageQuality quality) {
         mInteractionListener = interactionListener;
         mLayoutInflater = (LayoutInflater) GalleryApp.getInstance().getSystemService(Context.LAYOUT_INFLATER_SERVICE);
         mFeed = feed;
         mQuality = quality;
     }
- 
+
     @Override
     public int getCount() {
         return mFeed.size();
     }
- 
+
     @Override
     public boolean isViewFromObject(View view, Object object) {
         return view == ((LinearLayout) object);
     }
- 
+
     @Override
     public Object instantiateItem(ViewGroup container, final int position) {
-        View itemView = mLayoutInflater.inflate(R.layout.feed_pager_item, container, false);
- 
+        View itemView;
+        if (mQuality.equals(ImageQuality.STANDARD)) {
+            itemView = mLayoutInflater.inflate(R.layout.feed_pager_item_standard_quality, container, false);
+        } else {
+            itemView = mLayoutInflater.inflate(R.layout.feed_pager_item_low_quality, container, false);
+
+        }
+
+        Feed feed = mFeed.get(position);
+
         ViewHolder holder = new ViewHolder(itemView);
         holder.mImageView.setImageResource(R.mipmap.ic_launcher);
-        holder.mFeed = mFeed.get(position);
-        holder.mQuality = ImageQuality.LOW;
+        holder.mFeed = feed;
+        holder.mQuality = mQuality;
         holder.mImageView.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -57,10 +65,24 @@ public class CustomPagerAdapter extends PagerAdapter {
             }
         });
 
+        if (mQuality.equals(ImageQuality.STANDARD)) {
+            StringBuilder sb = new StringBuilder();
+            List<String> tags = feed.getTags();
+            for (int i = 0; i < tags.size(); i++) {
+                if (i != 0)
+                    sb.append(", ");
+                sb.append(tags.get(i));
+            }
+            holder.mPublishDate.setText(feed.getCreatedTime());
+            holder.mTag.setText(sb.toString());
+            if (feed.getUser() != null)
+                holder.mAuthor.setText(feed.getUser().getUsername());
+        }
+
         new DownloadImage().execute(holder);
 
         container.addView(itemView);
- 
+
         return itemView;
     }
 

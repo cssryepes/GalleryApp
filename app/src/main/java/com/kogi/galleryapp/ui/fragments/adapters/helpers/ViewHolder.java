@@ -18,11 +18,18 @@ public class ViewHolder extends RecyclerView.ViewHolder {
     public Feed mFeed;
     public ImageQuality mQuality;
 
+    public final TextView mPublishDate;
+    public final TextView mAuthor;
+    public final TextView mTag;
+
     public ViewHolder(View view) {
         super(view);
         mView = view;
         mImageView = (ImageView) view.findViewById(R.id.image_view);
         mContentView = (TextView) view.findViewById(R.id.content);
+        mPublishDate = (TextView) view.findViewById(R.id.publish_date);
+        mAuthor = (TextView) view.findViewById(R.id.author);
+        mTag = (TextView) view.findViewById(R.id.tag);
     }
 
     @Override

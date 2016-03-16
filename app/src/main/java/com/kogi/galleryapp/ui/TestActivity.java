@@ -1,48 +1,52 @@
 package com.kogi.galleryapp.ui;
 
-import android.graphics.Bitmap;
+import android.content.Intent;
 import android.os.Bundle;
-import android.support.design.widget.Snackbar;
+import android.support.v4.app.FragmentManager;
+import android.support.v4.app.FragmentTransaction;
 import android.support.v7.app.AppCompatActivity;
-import android.widget.ImageView;
-import android.widget.LinearLayout;
 
 import com.kogi.galleryapp.R;
-import com.kogi.galleryapp.domain.enums.ResponseStatus;
-import com.kogi.galleryapp.domain.enums.SocialMediaType;
-import com.kogi.galleryapp.domain.models.OnSocialMediaListener;
-import com.kogi.galleryapp.domain.models.SocialMediaModel;
+import com.kogi.galleryapp.domain.entities.Feed;
+import com.kogi.galleryapp.domain.enums.ImageQuality;
+import com.kogi.galleryapp.ui.fragments.DetailFeedFragment;
+import com.kogi.galleryapp.ui.listeners.OnFragmentInteractionListener;
 
-public class TestActivity extends AppCompatActivity implements OnSocialMediaListener {
+import java.util.List;
 
-    LinearLayout container = null;
+public class TestActivity extends AppCompatActivity implements OnFragmentInteractionListener {
+
+    private List<Feed> mFeed;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_test);
-        container = (LinearLayout) findViewById(R.id.test_container);
 
-        SocialMediaModel model = new SocialMediaModel(this);
-        model.getFeedSocialMedia(SocialMediaType.INSTAGRAM);
-    }
 
-    public void printData(Bitmap bitmap){
-        ImageView imageView = new ImageView(this);
-        //setting image resource
-        imageView.setImageBitmap(bitmap);
-        //setting image position
-        imageView.setLayoutParams(new LinearLayout.LayoutParams(
-                LinearLayout.LayoutParams.MATCH_PARENT,
-                LinearLayout.LayoutParams.WRAP_CONTENT));
-        container.addView(imageView);
     }
 
     @Override
-    public void onDataReceived(ResponseStatus status, Object data) {
-        if (data instanceof Bitmap) {
-            printData((Bitmap) data);
-        } else {
-            Snackbar.make(container, status.toString() + " " + data, Snackbar.LENGTH_INDEFINITE).show();
-        }
+    protected void onResume() {
+        super.onResume();
+
+        Intent intent = getIntent();
+        mFeed = intent.getExtras().getParcelableArrayList(FeedActivity.FEED);
+
+        FragmentManager manager = getSupportFragmentManager();
+        FragmentTransaction transaction = manager.beginTransaction();
+        DetailFeedFragment detail = DetailFeedFragment.newInstance(mFeed);
+        transaction.add(R.id.full_fragment, detail, "FullFragment");
+        transaction.commit();
+    }
+
+    @Override
+    public void onItemSelected(int position, ImageQuality quality) {
+
+    }
+
+    @Override
+    public void onSwipeItem(int position) {
+
     }
 }

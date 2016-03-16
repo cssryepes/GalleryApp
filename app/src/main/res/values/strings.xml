@@ -1,13 +1,17 @@
 <resources>
     <string name="app_name">GalleryApp</string>
+    <!--URLs-->
     <string name="format_url">%1$s?%2$s=%3$s</string>
 
+    <!--Messages-->
     <string name="no_connectivity">You must check your connection</string>
-    <string name="title_activity_base">BaseActivity</string>
-
-    <string name="hello_blank_fragment">Hello blank fragment</string>
 
     <!--Image description-->
     <string name="thumbnail">thumbnail</string>
     <string name="preview">preview</string>
+
+    <!--Static TextView-->
+    <string name="publish_date">Publish Date:</string>
+    <string name="author">Author:</string>
+    <string name="tag">Tag:</string>
 </resources>

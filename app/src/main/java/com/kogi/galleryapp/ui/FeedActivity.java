@@ -1,6 +1,8 @@
 package com.kogi.galleryapp.ui;
 
+import android.content.Intent;
 import android.os.Bundle;
+import android.os.Parcelable;
 import android.support.design.widget.Snackbar;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
@@ -27,7 +29,7 @@ public class FeedActivity extends BaseActivity implements OnSocialMediaListener,
 
     public static final String FEED = "FEED";
 
-    private List<Feed> mData;
+    private List<Feed> mFeed;
     private SocialMediaModel mModel;
     private LinearLayout mContainer;
     private GridFeedFragment mGridFeedFragment;
@@ -38,14 +40,11 @@ public class FeedActivity extends BaseActivity implements OnSocialMediaListener,
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
+        mFeed = new ArrayList<>();
         mModel = new SocialMediaModel(this);
         mModel.getFeedSocialMedia(SocialMediaType.INSTAGRAM);
 
-        mData = new ArrayList<>();
-
-
         mContainer = (LinearLayout) findViewById(R.id.container);
-
     }
 
     @Override
@@ -69,11 +68,11 @@ public class FeedActivity extends BaseActivity implements OnSocialMediaListener,
                 List<?> castedData = (List<?>) data;
                 for (Object object : castedData) {
                     if (object instanceof Feed) {
-                        mData.add(0, (Feed) object);
+                        mFeed.add(0, (Feed) object);
                     }
                 }
 
-                if (!mData.isEmpty()) {
+                if (!mFeed.isEmpty()) {
                     setFragments();
                 }
 
@@ -89,7 +88,7 @@ public class FeedActivity extends BaseActivity implements OnSocialMediaListener,
         Fragment fragment = manager.findFragmentByTag("FragmentBottom");
         if (fragment == null) {
             //Add fragment
-            mGridFeedFragment = GridFeedFragment.newInstance(mData);
+            mGridFeedFragment = GridFeedFragment.newInstance(mFeed);
             transaction.add(R.id.fragmentBottom, mGridFeedFragment, "FragmentBottom");
 
         } else {
@@ -103,7 +102,7 @@ public class FeedActivity extends BaseActivity implements OnSocialMediaListener,
         fragment = manager.findFragmentByTag("FragmentBottom");
         if (fragment == null) {
             //Add fragment
-            mPreviewFeedFragment = PreviewFeedFragment.newInstance(mData);
+            mPreviewFeedFragment = PreviewFeedFragment.newInstance(mFeed);
             transaction.add(R.id.fragmentTop, mPreviewFeedFragment, "FragmentTop").commit();
 
         } else {
@@ -143,10 +142,16 @@ public class FeedActivity extends BaseActivity implements OnSocialMediaListener,
             }
 
         } else if (quality.equals(ImageQuality.LOW)) {
-            if (mGridFeedFragment != null) {
-                mGridFeedFragment.showFeed(position);
-            }
+//            if (mGridFeedFragment != null) {
+//                mGridFeedFragment.showFeed(position);
+//            }
             //TODO Mostrar fragment detallado
+
+            Intent myIntent = new Intent(FeedActivity.this, TestActivity.class);
+            Bundle args = new Bundle();
+            args.putParcelableArrayList(FeedActivity.FEED, (ArrayList<? extends Parcelable>) mFeed);
+            myIntent.putExtras(args);
+            startActivity(myIntent);
 
         } else if (quality.equals(ImageQuality.STANDARD)) {
 
