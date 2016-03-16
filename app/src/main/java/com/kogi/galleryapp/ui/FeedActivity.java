@@ -10,6 +10,7 @@ import android.widget.LinearLayout;
 
 import com.kogi.galleryapp.R;
 import com.kogi.galleryapp.domain.entities.Feed;
+import com.kogi.galleryapp.domain.enums.FeedDetail;
 import com.kogi.galleryapp.domain.enums.ResponseStatus;
 import com.kogi.galleryapp.domain.enums.SocialMediaType;
 import com.kogi.galleryapp.domain.models.OnSocialMediaListener;
@@ -24,12 +25,13 @@ import java.util.List;
 
 public class FeedActivity extends BaseActivity implements OnSocialMediaListener, OnGridFragmentInteractionListener, OnFragmentInteractionListener {
 
+    public static final String FEED = "FEED";
+
     private List<Feed> mData;
     private SocialMediaModel mModel;
     private LinearLayout mContainer;
     private GridFeedFragment mGridFeedFragment;
     private PreviewFeedFragment mPreviewFeedFragment;
-    public static final String FEED = "FEED";
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -49,10 +51,10 @@ public class FeedActivity extends BaseActivity implements OnSocialMediaListener,
     @Override
     public void onDataReceived(ResponseStatus status, Object data) {
 
-        if (status == ResponseStatus.ERROR) {
+        if (status.equals(ResponseStatus.ERROR)) {
             //append log
-        } else if (status == ResponseStatus.OK || status == ResponseStatus.NO_CONNECTION) {
-            if (status == ResponseStatus.NO_CONNECTION) {
+        } else if (status.equals(ResponseStatus.OK) || status.equals(ResponseStatus.NO_CONNECTION)) {
+            if (status.equals(ResponseStatus.NO_CONNECTION)) {
                 Snackbar.make(mContainer, status.name(), Snackbar.LENGTH_INDEFINITE)
                         .setAction("OK", new View.OnClickListener() {
                             @Override
@@ -67,7 +69,7 @@ public class FeedActivity extends BaseActivity implements OnSocialMediaListener,
                 List<?> castedData = (List<?>) data;
                 for (Object object : castedData) {
                     if (object instanceof Feed) {
-                        mData.add(0,(Feed) object);
+                        mData.add(0, (Feed) object);
                     }
                 }
 
@@ -86,8 +88,7 @@ public class FeedActivity extends BaseActivity implements OnSocialMediaListener,
                     } else {
                         if (fragment instanceof GridFeedFragment) {
                             mGridFeedFragment = (GridFeedFragment) fragment;
-                            mGridFeedFragment.notifyDataSetChanged();
-                            mPreviewFeedFragment.notifyDataSetChanged();
+                            notifyDataSetChanged();
                         }
                     }
 
@@ -99,10 +100,9 @@ public class FeedActivity extends BaseActivity implements OnSocialMediaListener,
                         transaction.add(R.id.fragmentTop, mPreviewFeedFragment, "FragmentTop").commit();
 
                     } else {
-                        if (fragment instanceof  PreviewFeedFragment) {
+                        if (fragment instanceof PreviewFeedFragment) {
                             mPreviewFeedFragment = (PreviewFeedFragment) fragment;
-                            mPreviewFeedFragment.notifyDataSetChanged();
-                            mGridFeedFragment.notifyDataSetChanged();
+                            notifyDataSetChanged();
                         }
                     }
 
@@ -112,10 +112,11 @@ public class FeedActivity extends BaseActivity implements OnSocialMediaListener,
         }
     }
 
+    private void notifyDataSetChanged() {
+        mPreviewFeedFragment.notifyDataSetChanged();
+        mGridFeedFragment.notifyDataSetChanged();
+    }
 
-//    public List<Feed> getData() {
-//        return mData;
-//    }
 
     @Override
     protected void onDestroy() {
@@ -129,13 +130,23 @@ public class FeedActivity extends BaseActivity implements OnSocialMediaListener,
     }
 
     @Override
-    public void onItemSelected(Feed item) {
-        Snackbar.make(mContainer, item.toString(), Snackbar.LENGTH_INDEFINITE)
-                .setAction("OK", new View.OnClickListener() {
-                    @Override
-                    public void onClick(View v) {
-                    }
-                }).show();
+    public void onItemSelected(int position, FeedDetail detail) {
+        if (detail.equals(FeedDetail.THUMBNAIL)) {
+            mPreviewFeedFragment.showFeed(position);
+
+        } else if (detail.equals(FeedDetail.LOW)) {
+            mGridFeedFragment.showFeed(position);
+
+        } else if (detail.equals(FeedDetail.STANDARD)) {
+
+        } else {
+            Snackbar.make(mContainer, position, Snackbar.LENGTH_INDEFINITE)
+                    .setAction("OK", new View.OnClickListener() {
+                        @Override
+                        public void onClick(View v) {
+                        }
+                    }).show();
+        }
 
     }
 

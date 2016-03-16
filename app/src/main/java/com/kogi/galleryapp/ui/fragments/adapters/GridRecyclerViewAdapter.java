@@ -7,6 +7,7 @@ import android.view.ViewGroup;
 
 import com.kogi.galleryapp.R;
 import com.kogi.galleryapp.domain.entities.Feed;
+import com.kogi.galleryapp.domain.enums.FeedDetail;
 import com.kogi.galleryapp.domain.enums.ImageQuality;
 import com.kogi.galleryapp.ui.fragments.adapters.helpers.DownloadImage;
 import com.kogi.galleryapp.ui.fragments.adapters.helpers.ViewHolder;
@@ -42,7 +43,7 @@ public class GridRecyclerViewAdapter extends RecyclerView.Adapter<ViewHolder> {
             @Override
             public void onClick(View v) {
                 if (mInteractionListener != null) {
-                    mInteractionListener.onItemSelected(mFeed.get(position));
+                    mInteractionListener.onItemSelected(position, FeedDetail.THUMBNAIL);
                 }
             }
         });

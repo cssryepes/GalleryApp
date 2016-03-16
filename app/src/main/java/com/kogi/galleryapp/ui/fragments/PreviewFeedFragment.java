@@ -9,7 +9,6 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
-import com.kogi.galleryapp.GalleryApp;
 import com.kogi.galleryapp.R;
 import com.kogi.galleryapp.domain.entities.Feed;
 import com.kogi.galleryapp.ui.FeedActivity;
@@ -34,6 +33,12 @@ public class PreviewFeedFragment extends Fragment {
         mCustomPagerAdapter.notifyDataSetChanged();
     }
 
+    public void showFeed(int position) {
+        if (mViewPager != null) {
+            mViewPager.setCurrentItem(position, true);
+        }
+    }
+
     public static PreviewFeedFragment newInstance(List<Feed> feed) {
         PreviewFeedFragment fragment = new PreviewFeedFragment();
         Bundle args = new Bundle();
@@ -54,7 +59,7 @@ public class PreviewFeedFragment extends Fragment {
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.fragment_preview_feed, container, false);
-        mCustomPagerAdapter = new CustomPagerAdapter(GalleryApp.getInstance(), mFeed);
+        mCustomPagerAdapter = new CustomPagerAdapter(mListener, mFeed);
         mViewPager = (ViewPager) view.findViewById(R.id.pager);
         mViewPager.setAdapter(mCustomPagerAdapter);
         mViewPager.setPageTransformer(true, new ZoomOutPageTransformer());

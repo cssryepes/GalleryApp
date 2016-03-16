@@ -26,7 +26,9 @@ public class GridFeedFragment extends Fragment implements SwipeRefreshLayout.OnR
     private int mColumnCount = 3;
     private OnGridFragmentInteractionListener mGridListener;
     private OnFragmentInteractionListener mInteractionListener;
+    private RecyclerView recyclerView;
     private GridRecyclerViewAdapter gridRecyclerViewAdapter;
+    private GridLayoutManager gridLayoutManager;
     private SwipeRefreshLayout swipeRefreshLayout;
     private List<Feed> mFeed;
 
@@ -36,6 +38,14 @@ public class GridFeedFragment extends Fragment implements SwipeRefreshLayout.OnR
     public void notifyDataSetChanged() {
         gridRecyclerViewAdapter.notifyDataSetChanged();
         swipeRefreshLayout.setRefreshing(false);
+    }
+
+    public void showFeed(int position) {
+        if (gridLayoutManager != null) {
+            gridLayoutManager.scrollToPosition(position);
+            gridLayoutManager.smoothScrollToPosition(recyclerView,
+                    new RecyclerView.State(), position);
+        }
     }
 
     public static GridFeedFragment newInstance(List<Feed> feed) {
@@ -64,9 +74,9 @@ public class GridFeedFragment extends Fragment implements SwipeRefreshLayout.OnR
         if (view instanceof SwipeRefreshLayout) {
             Context context = view.getContext();
             gridRecyclerViewAdapter = new GridRecyclerViewAdapter(mFeed, mInteractionListener);
-
-            RecyclerView recyclerView = (RecyclerView) view.findViewById(R.id.list);
-            recyclerView.setLayoutManager(new GridLayoutManager(context, mColumnCount));
+            gridLayoutManager = new GridLayoutManager(context, mColumnCount);
+            recyclerView = (RecyclerView) view.findViewById(R.id.list);
+            recyclerView.setLayoutManager(gridLayoutManager);
             recyclerView.setAdapter(gridRecyclerViewAdapter);
 
             swipeRefreshLayout = (SwipeRefreshLayout) view;
