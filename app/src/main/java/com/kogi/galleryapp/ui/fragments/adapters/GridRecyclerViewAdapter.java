@@ -7,11 +7,11 @@ import android.view.ViewGroup;
 import android.widget.LinearLayout;
 
 import com.kogi.galleryapp.R;
-import com.kogi.galleryapp.common.DownloadImage;
+import com.kogi.galleryapp.ui.helpers.DownloadImage;
 import com.kogi.galleryapp.domain.entities.Feed;
 import com.kogi.galleryapp.domain.entities.Image;
 import com.kogi.galleryapp.domain.enums.ImageQuality;
-import com.kogi.galleryapp.ui.fragments.adapters.helpers.ViewHolder;
+import com.kogi.galleryapp.ui.helpers.ViewHolder;
 import com.kogi.galleryapp.ui.listeners.OnFragmentInteractionListener;
 
 import java.util.List;
@@ -62,6 +62,9 @@ public class GridRecyclerViewAdapter extends RecyclerView.Adapter<ViewHolder> {
         holder.mView.setOnLongClickListener(new View.OnLongClickListener() {
             @Override
             public boolean onLongClick(View v) {
+                if (mInteractionListener != null) {
+                    mInteractionListener.onItemLongSelected(position, ImageQuality.THUMBNAIL);
+                }
                 return false;
             }
         });

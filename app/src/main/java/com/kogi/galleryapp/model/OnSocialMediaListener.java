@@ -1,4 +1,4 @@
-package com.kogi.galleryapp.domain.models;
+package com.kogi.galleryapp.model;
 
 import com.kogi.galleryapp.domain.enums.ResponseStatus;
 

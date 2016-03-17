@@ -2,11 +2,12 @@
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="wrap_content"
     android:layout_height="wrap_content"
-    android:background="@drawable/grid_selector"
     android:padding="@dimen/fab_margin"
+    android:background="@drawable/grid_selector"
     android:gravity="center_horizontal"
     android:orientation="vertical">
-
+    <!--android:background="@drawable/grid_selector"-->
+    <!--android:background="?attr/selectableItemBackground"-->
     <ImageView
         android:id="@+id/image_view"
         android:layout_width="wrap_content"

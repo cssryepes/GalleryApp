@@ -8,7 +8,7 @@ import android.net.NetworkInfo;
 import android.os.Environment;
 import android.util.LruCache;
 
-import com.kogi.galleryapp.common.DiskCache;
+import com.kogi.galleryapp.ui.helpers.DiskCache;
 
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;

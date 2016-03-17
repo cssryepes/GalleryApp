@@ -25,15 +25,18 @@
         <activity
             android:name=".ui.DetailFeedActivity"
             android:parentActivityName=".ui.FeedActivity">
-
-            <!-- Parent activity meta-data to support 4.0 and lower -->
             <meta-data
                 android:name="android.support.PARENT_ACTIVITY"
                 android:value=".ui.FeedActivity" />
         </activity>
         <activity
             android:name=".ui.WebActivity"
-            android:screenOrientation="portrait"></activity>
+            android:screenOrientation="portrait"
+            android:parentActivityName=".ui.DetailFeedActivity">
+            <meta-data
+                android:name="android.support.PARENT_ACTIVITY"
+                android:value=".ui.DetailFeedActivity" />
+        </activity>
     </application>
 
 </manifest>

@@ -20,8 +20,8 @@ import com.kogi.galleryapp.domain.entities.Feed;
 import com.kogi.galleryapp.domain.enums.ImageQuality;
 import com.kogi.galleryapp.domain.enums.ResponseStatus;
 import com.kogi.galleryapp.domain.enums.SocialMediaType;
-import com.kogi.galleryapp.domain.models.OnSocialMediaListener;
-import com.kogi.galleryapp.domain.models.SocialMediaModel;
+import com.kogi.galleryapp.model.OnSocialMediaListener;
+import com.kogi.galleryapp.model.SocialMediaModel;
 import com.kogi.galleryapp.ui.fragments.GridFeedFragment;
 import com.kogi.galleryapp.ui.fragments.PreviewFeedFragment;
 import com.kogi.galleryapp.ui.listeners.OnFragmentInteractionListener;
@@ -163,15 +163,6 @@ public class FeedActivity extends AppCompatActivity implements OnSocialMediaList
             myIntent.putExtras(Utils.getBundle(mFeed, position));
             startActivity(myIntent);
 
-        } else if (quality.equals(ImageQuality.STANDARD)) {
-
-        } else {
-            Snackbar.make(mContainer, position, Snackbar.LENGTH_INDEFINITE)
-                    .setAction("OK", new View.OnClickListener() {
-                        @Override
-                        public void onClick(View v) {
-                        }
-                    }).show();
         }
 
     }
@@ -182,6 +173,18 @@ public class FeedActivity extends AppCompatActivity implements OnSocialMediaList
             mGridFeedFragment.showFeed(position);
         }
     }
+
+    @Override
+    public void onItemLongSelected(int position, ImageQuality quality) {
+
+        Snackbar.make(mContainer, mFeed.get(position).getCaption(), Snackbar.LENGTH_INDEFINITE)
+                .setAction(R.string.snack_dismiss, new View.OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+                    }
+                }).show();
+    }
+
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
         switch (item.getItemId()) {

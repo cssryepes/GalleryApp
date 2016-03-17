@@ -12,8 +12,8 @@ import com.kogi.galleryapp.R;
 import com.kogi.galleryapp.Utils;
 import com.kogi.galleryapp.domain.entities.Feed;
 import com.kogi.galleryapp.domain.enums.ImageQuality;
-import com.kogi.galleryapp.common.DownloadImage;
-import com.kogi.galleryapp.ui.fragments.adapters.helpers.ViewHolder;
+import com.kogi.galleryapp.ui.helpers.DownloadImage;
+import com.kogi.galleryapp.ui.helpers.ViewHolder;
 import com.kogi.galleryapp.ui.listeners.OnFragmentInteractionListener;
 
 import java.util.List;

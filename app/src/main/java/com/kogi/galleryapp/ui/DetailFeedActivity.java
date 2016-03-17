@@ -85,6 +85,10 @@ public class DetailFeedActivity extends AppCompatActivity implements OnFragmentI
     public void onSwipeItem(int position) {
     }
 
+    @Override
+    public void onItemLongSelected(int position, ImageQuality quality) {
+    }
+
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
@@ -96,6 +100,11 @@ public class DetailFeedActivity extends AppCompatActivity implements OnFragmentI
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
         switch (item.getItemId()) {
+            case android.R.id.home:
+//                NavUtils.navigateUpFromSameTask(this);
+                finish();
+                return true;
+
             case R.id.action_share:
                 shareContent();
                 return true;

@@ -3,6 +3,7 @@ package com.kogi.galleryapp.ui;
 import android.annotation.SuppressLint;
 import android.content.Intent;
 import android.os.Bundle;
+import android.support.v7.app.ActionBar;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.view.Menu;
@@ -12,14 +13,9 @@ import android.webkit.WebSettings;
 import android.webkit.WebView;
 import android.webkit.WebViewClient;
 
-import com.kogi.galleryapp.GalleryApp;
 import com.kogi.galleryapp.R;
 import com.kogi.galleryapp.Utils;
 import com.kogi.galleryapp.domain.entities.Feed;
-import com.kogi.galleryapp.domain.entities.Image;
-import com.kogi.galleryapp.domain.enums.ImageQuality;
-
-import java.util.List;
 
 public class WebActivity extends AppCompatActivity {
 
@@ -36,7 +32,7 @@ public class WebActivity extends AppCompatActivity {
             mFeed = extras.getParcelable(Utils.FEED);
         }
 
-        WebView webView= (WebView) findViewById(R.id.web_view);
+        WebView webView = (WebView) findViewById(R.id.web_view);
         WebSettings webSettings = webView.getSettings();
         webSettings.setJavaScriptEnabled(true);
         webView.setWebViewClient(new WebViewClient());
@@ -45,7 +41,11 @@ public class WebActivity extends AppCompatActivity {
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
 
-        toolbar.setLogo(R.drawable.ic_search_white_48dp);
+        ActionBar mActionBar = getSupportActionBar();
+        if (mActionBar != null) {
+            mActionBar.setDisplayHomeAsUpEnabled(true);
+            mActionBar.setTitle(mFeed.getLink());
+        }
     }
 
     @Override
@@ -58,6 +58,10 @@ public class WebActivity extends AppCompatActivity {
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
         switch (item.getItemId()) {
+            case android.R.id.home:
+                finish();
+                return true;
+
             case R.id.action_share:
                 shareContent();
                 return true;
@@ -70,17 +74,10 @@ public class WebActivity extends AppCompatActivity {
 
 
     private void shareContent() {
-        String imageUrl = null;
-        List<Image> images = mFeed.getImages();
-        for (Image image : images) {
-            if (image.getQuality().equals(ImageQuality.STANDARD))
-                imageUrl = image.getUrl();
-        }
-
         Intent sharingIntent = new Intent(android.content.Intent.ACTION_SEND);
         sharingIntent.setType("text/plain");
         sharingIntent.putExtra(android.content.Intent.EXTRA_SUBJECT, getString(R.string.intent_extra_subject));
-        sharingIntent.putExtra(android.content.Intent.EXTRA_TEXT,imageUrl);
+        sharingIntent.putExtra(android.content.Intent.EXTRA_TEXT, mFeed.getLink());
         startActivity(Intent.createChooser(sharingIntent, getString(R.string.intent_extra_chooser)));
     }
 }

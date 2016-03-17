@@ -1,4 +1,4 @@
-package com.kogi.galleryapp.ui.fragments.adapters.helpers;
+package com.kogi.galleryapp.ui.helpers;
 
 import android.graphics.Bitmap;
 import android.support.v7.widget.RecyclerView;

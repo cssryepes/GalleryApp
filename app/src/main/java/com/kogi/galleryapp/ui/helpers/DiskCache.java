@@ -1,4 +1,4 @@
-package com.kogi.galleryapp.common;
+package com.kogi.galleryapp.ui.helpers;
 
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;

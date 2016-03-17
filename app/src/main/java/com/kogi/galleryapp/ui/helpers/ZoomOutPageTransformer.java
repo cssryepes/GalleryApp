@@ -1,4 +1,4 @@
-package com.kogi.galleryapp.ui.fragments.adapters.helpers;
+package com.kogi.galleryapp.ui.helpers;
 
 import android.support.v4.view.ViewPager;
 import android.view.View;
@@ -33,7 +33,7 @@ public class ZoomOutPageTransformer implements ViewPager.PageTransformer {
             // Fade the page relative to its size.
             view.setAlpha(MIN_ALPHA +
                     (scaleFactor - MIN_SCALE) /
-                    (1 - MIN_SCALE) * (1 - MIN_ALPHA));
+                            (1 - MIN_SCALE) * (1 - MIN_ALPHA));
 
         } else { // (1,+Infinity]
             // This page is way off-screen to the right.

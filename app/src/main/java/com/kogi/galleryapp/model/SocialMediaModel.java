@@ -1,4 +1,4 @@
-package com.kogi.galleryapp.domain.models;
+package com.kogi.galleryapp.model;
 
 import android.os.AsyncTask;
 import android.util.Log;

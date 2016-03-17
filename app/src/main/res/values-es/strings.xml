@@ -23,4 +23,7 @@
     <!--Intent Share-->
     <string name="intent_extra_subject">Compartiendo Imagen</string>
     <string name="intent_extra_chooser">Compartir URL Imagen</string>
+
+    <!--SnackBar-->
+    <string name="snack_dismiss">Dismiss</string>
 </resources>

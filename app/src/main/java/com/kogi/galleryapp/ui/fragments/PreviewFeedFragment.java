@@ -13,7 +13,7 @@ import com.kogi.galleryapp.Utils;
 import com.kogi.galleryapp.domain.entities.Feed;
 import com.kogi.galleryapp.domain.enums.ImageQuality;
 import com.kogi.galleryapp.ui.fragments.adapters.CustomPagerAdapter;
-import com.kogi.galleryapp.ui.fragments.adapters.helpers.ZoomOutPageTransformer;
+import com.kogi.galleryapp.ui.helpers.ZoomOutPageTransformer;
 import com.kogi.galleryapp.ui.listeners.OnFragmentInteractionListener;
 
 import java.util.List;

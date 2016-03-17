@@ -1,4 +1,4 @@
-package com.kogi.galleryapp.common;
+package com.kogi.galleryapp.ui.helpers;
 
 import android.graphics.Bitmap;
 import android.os.AsyncTask;
@@ -9,7 +9,7 @@ import com.kogi.galleryapp.Utils;
 import com.kogi.galleryapp.domain.HttpConnection;
 import com.kogi.galleryapp.domain.entities.Image;
 import com.kogi.galleryapp.domain.enums.ResponseStatus;
-import com.kogi.galleryapp.ui.fragments.adapters.helpers.ViewHolder;
+import com.kogi.galleryapp.ui.helpers.ViewHolder;
 
 import java.util.List;
 

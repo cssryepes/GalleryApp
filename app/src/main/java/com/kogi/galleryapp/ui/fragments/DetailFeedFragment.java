@@ -13,7 +13,7 @@ import com.kogi.galleryapp.Utils;
 import com.kogi.galleryapp.domain.entities.Feed;
 import com.kogi.galleryapp.domain.enums.ImageQuality;
 import com.kogi.galleryapp.ui.fragments.adapters.CustomPagerAdapter;
-import com.kogi.galleryapp.ui.fragments.adapters.helpers.ZoomOutPageTransformer;
+import com.kogi.galleryapp.ui.helpers.DepthPageTransformer;
 import com.kogi.galleryapp.ui.listeners.OnFragmentInteractionListener;
 
 import java.util.List;
@@ -52,7 +52,7 @@ public class DetailFeedFragment extends Fragment implements ViewPager.OnPageChan
         mCustomPagerAdapter = new CustomPagerAdapter(mListener, mFeed, ImageQuality.STANDARD);
         mViewPager = (ViewPager) view.findViewById(R.id.pager);
         mViewPager.setAdapter(mCustomPagerAdapter);
-        mViewPager.setPageTransformer(true, new ZoomOutPageTransformer());
+        mViewPager.setPageTransformer(true, new DepthPageTransformer());
         mViewPager.addOnPageChangeListener(this);
         mViewPager.setCurrentItem(mPosition);
         return view;
