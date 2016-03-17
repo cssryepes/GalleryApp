@@ -28,8 +28,9 @@ public class PreviewFeedFragment extends Fragment implements ViewPager.OnPageCha
     public PreviewFeedFragment() {
     }
 
-    public void notifyDataSetChanged() {
+    public void notifyDataSetChanged(int newDataLenght) {
         mCustomPagerAdapter.notifyDataSetChanged();
+        mViewPager.setCurrentItem(mViewPager.getCurrentItem() + newDataLenght);
     }
 
     public void showFeed(int position) {
@@ -57,7 +58,7 @@ public class PreviewFeedFragment extends Fragment implements ViewPager.OnPageCha
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
-        View view = inflater.inflate(R.layout.fragment_preview_feed, container, false);
+        View view = inflater.inflate(R.layout.fragment_feed_preview, container, false);
         mCustomPagerAdapter = new CustomPagerAdapter(mListener, mFeed, ImageQuality.LOW);
         mViewPager = (ViewPager) view.findViewById(R.id.pager);
         mViewPager.setAdapter(mCustomPagerAdapter);

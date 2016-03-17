@@ -2,6 +2,7 @@ package com.kogi.galleryapp.ui;
 
 import android.content.Intent;
 import android.os.Bundle;
+import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentTransaction;
 import android.support.v7.app.ActionBar;
@@ -40,10 +41,13 @@ public class DetailFeedActivity extends AppCompatActivity implements OnFragmentI
 
         FragmentManager manager = getSupportFragmentManager();
         FragmentTransaction transaction = manager.beginTransaction();
-        DetailFeedFragment detail = DetailFeedFragment.newInstance(mFeed, mPosition);
-        transaction.add(R.id.full_fragment, detail, "FullFragment");
-        transaction.commit();
 
+        Fragment fragment = manager.findFragmentByTag("FullFragment");
+        if (fragment == null) {
+            DetailFeedFragment detail = DetailFeedFragment.newInstance(mFeed, mPosition);
+            transaction.add(R.id.full_fragment, detail, "FullFragment");
+            transaction.commit();
+        }
 
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
@@ -63,7 +67,7 @@ public class DetailFeedActivity extends AppCompatActivity implements OnFragmentI
 
     @Override
     public void onItemSelected(int position, ImageQuality quality) {
-        if (mPosition == position) {
+        if (mPosition == position & quality.equals(ImageQuality.STANDARD)) {
             mPosition = position;
             Intent myIntent = new Intent(DetailFeedActivity.this, WebActivity.class);
             myIntent.putExtras(Utils.getBundle(mFeed.get(position)));

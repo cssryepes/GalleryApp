@@ -74,6 +74,7 @@
     <ImageView
         android:id="@+id/image_view"
         android:layout_width="match_parent"
+        android:src="@drawable/ic_photo_library_white_48dp"
         android:layout_height="match_parent"
         android:contentDescription="@string/preview" />
 </LinearLayout>

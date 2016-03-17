@@ -1,0 +1,26 @@
+<resources>
+    <string name="app_name">GalleryApp</string>
+
+    <!--URLs-->
+    <string name="format_url">%1$s?%2$s=%3$s</string>
+
+    <!--Messages-->
+    <string name="no_connectivity">Debes revisar tu conexión</string>
+
+    <!--Image description-->
+    <string name="thumbnail">miniatura</string>
+    <string name="preview">previsualización</string>
+
+    <!--Static TextView-->
+    <string name="publish_date">Fecha de Publicación:</string>
+    <string name="author">Autor:</string>
+    <string name="tag">Tag:</string>
+
+    <!--Menu Action-->
+    <string name="action_refresh">Refrescar</string>
+    <string name="action_share">Compartir</string>
+
+    <!--Intent Share-->
+    <string name="intent_extra_subject">Compartiendo Imagen</string>
+    <string name="intent_extra_chooser">Compartir URL Imagen</string>
+</resources>

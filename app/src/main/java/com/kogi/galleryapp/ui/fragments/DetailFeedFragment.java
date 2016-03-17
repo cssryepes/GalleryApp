@@ -38,6 +38,7 @@ public class DetailFeedFragment extends Fragment implements ViewPager.OnPageChan
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        setRetainInstance(true);
         if (getArguments() != null) {
             mFeed = getArguments().getParcelableArrayList(Utils.FEED);
             mPosition = getArguments().getInt(Utils.POSITION);

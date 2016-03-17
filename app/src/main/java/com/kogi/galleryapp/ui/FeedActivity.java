@@ -74,6 +74,7 @@ public class FeedActivity extends AppCompatActivity implements OnSocialMediaList
 
             if (data instanceof List<?>) {
                 List<?> castedData = (List<?>) data;
+                int newDataLenght = castedData.size();
                 for (Object object : castedData) {
                     if (object instanceof Feed) {
                         mFeed.add(0, (Feed) object);
@@ -81,14 +82,14 @@ public class FeedActivity extends AppCompatActivity implements OnSocialMediaList
                 }
 
                 if (!mFeed.isEmpty()) {
-                    setFragments();
+                    setFragments(newDataLenght);
                 }
 
             }
         }
     }
 
-    private void setFragments() {
+    private void setFragments(int newDataLenght) {
         FragmentManager manager = getSupportFragmentManager();
         FragmentTransaction transaction = manager.beginTransaction();
 
@@ -102,7 +103,7 @@ public class FeedActivity extends AppCompatActivity implements OnSocialMediaList
         } else {
             if (fragment instanceof GridFeedFragment) {
                 mGridFeedFragment = (GridFeedFragment) fragment;
-                notifyDataSetChanged();
+                notifyDataSetChanged(newDataLenght);
             }
         }
 
@@ -116,17 +117,17 @@ public class FeedActivity extends AppCompatActivity implements OnSocialMediaList
         } else {
             if (fragment instanceof PreviewFeedFragment) {
                 mPreviewFeedFragment = (PreviewFeedFragment) fragment;
-                notifyDataSetChanged();
+                notifyDataSetChanged(newDataLenght);
             }
         }
     }
 
-    private void notifyDataSetChanged() {
+    private void notifyDataSetChanged(int newDataLenght) {
         if (mPreviewFeedFragment != null) {
-            mPreviewFeedFragment.notifyDataSetChanged();
+            mPreviewFeedFragment.notifyDataSetChanged(newDataLenght);
         }
         if (mGridFeedFragment != null) {
-            mGridFeedFragment.notifyDataSetChanged();
+            mGridFeedFragment.notifyDataSetChanged(newDataLenght);
             mGridFeedFragment.setRefreshLayout(false);
         }
     }

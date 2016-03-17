@@ -1,4 +1,4 @@
-package com.kogi.galleryapp.ui.fragments.adapters.helpers;
+package com.kogi.galleryapp.common;
 
 import android.graphics.Bitmap;
 import android.os.AsyncTask;
@@ -9,6 +9,7 @@ import com.kogi.galleryapp.Utils;
 import com.kogi.galleryapp.domain.HttpConnection;
 import com.kogi.galleryapp.domain.entities.Image;
 import com.kogi.galleryapp.domain.enums.ResponseStatus;
+import com.kogi.galleryapp.ui.fragments.adapters.helpers.ViewHolder;
 
 import java.util.List;
 
@@ -17,20 +18,24 @@ public class DownloadImage extends AsyncTask<ViewHolder, Void, ViewHolder> {
 
     @Override
     protected ViewHolder doInBackground(ViewHolder... params) {
-        Utils.print(Log.DEBUG, params[0].toString());
+//        Utils.print(Log.DEBUG, params[0].toString());
         try {
             List<Image> images = params[0].mFeed.getImages();
             for (Image image : images) {
                 if (image.getQuality().equals(params[0].mQuality)) {
 
-                    Bitmap bitmapFromMemCache = GalleryApp.getInstance().getBitmapFromMemCache(image.getUrl());
 
-                    if (bitmapFromMemCache != null) {
-                        params[0].mBitmap = bitmapFromMemCache;
+                    GalleryApp app = GalleryApp.getInstance();
+
+                    Bitmap bitmapFromCache = app.getBitmapFromCache(image.getUrl());
+
+                    if (bitmapFromCache != null) {
+                        params[0].mBitmap = bitmapFromCache;
 
                     } else {
+                        Utils.print(Log.DEBUG, "DownloadImage AsyncTask: " + image.getUrl());
                         params[0].mBitmap = HttpConnection.getBitmapFromURL(image.getUrl());
-                        GalleryApp.getInstance().addBitmapToMemoryCache(image.getUrl(), params[0].mBitmap);
+                        app.addBitmapToCache(image.getUrl(), params[0].mBitmap);
 
                     }
 
@@ -48,13 +53,11 @@ public class DownloadImage extends AsyncTask<ViewHolder, Void, ViewHolder> {
     @Override
     protected void onPreExecute() {
         super.onPreExecute();
-        Utils.print(Log.DEBUG, "DownloadImage AsyncTask - onPreExecute()");
     }
 
     @Override
     protected void onPostExecute(ViewHolder viewHolder) {
         super.onPostExecute(viewHolder);
-        Utils.print(Log.DEBUG, "DownloadImage AsyncTask - onPostExecute(ViewHolder viewHolder)");
 
         if (status.equals(ResponseStatus.OK) && viewHolder.mBitmap != null) {
             viewHolder.mImageView.setImageBitmap(viewHolder.mBitmap);

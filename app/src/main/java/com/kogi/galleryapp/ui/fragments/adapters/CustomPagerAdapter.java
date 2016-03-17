@@ -12,7 +12,7 @@ import com.kogi.galleryapp.R;
 import com.kogi.galleryapp.Utils;
 import com.kogi.galleryapp.domain.entities.Feed;
 import com.kogi.galleryapp.domain.enums.ImageQuality;
-import com.kogi.galleryapp.ui.fragments.adapters.helpers.DownloadImage;
+import com.kogi.galleryapp.common.DownloadImage;
 import com.kogi.galleryapp.ui.fragments.adapters.helpers.ViewHolder;
 import com.kogi.galleryapp.ui.listeners.OnFragmentInteractionListener;
 
@@ -54,7 +54,7 @@ public class CustomPagerAdapter extends PagerAdapter {
         Feed feed = mFeed.get(position);
 
         ViewHolder holder = new ViewHolder(itemView);
-        holder.mImageView.setImageResource(R.mipmap.ic_launcher);
+//        holder.mImageView.setImageResource(R.mipmap.ic_launcher);
         holder.mFeed = feed;
         holder.mQuality = mQuality;
         holder.mImageView.setOnClickListener(new View.OnClickListener() {
