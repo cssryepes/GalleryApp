@@ -7,6 +7,7 @@ import android.support.v4.view.ViewPager;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ImageView;
 
 import com.kogi.galleryapp.R;
 import com.kogi.galleryapp.Utils;
@@ -26,6 +27,10 @@ public class PreviewFeedFragment extends Fragment implements ViewPager.OnPageCha
     private ViewPager mViewPager;
 
     public PreviewFeedFragment() {
+    }
+
+    public ImageView getCurrentImageView() {
+        return mCustomPagerAdapter.getCurrentImageView();
     }
 
     public void notifyDataSetChanged(int newDataLenght) {

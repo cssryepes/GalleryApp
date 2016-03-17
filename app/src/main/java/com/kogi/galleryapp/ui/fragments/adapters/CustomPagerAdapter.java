@@ -5,6 +5,7 @@ import android.support.v4.view.PagerAdapter;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ImageView;
 import android.widget.LinearLayout;
 
 import com.kogi.galleryapp.GalleryApp;
@@ -23,6 +24,11 @@ public class CustomPagerAdapter extends PagerAdapter {
     private final LayoutInflater mLayoutInflater;
     private final OnFragmentInteractionListener mInteractionListener;
     private final ImageQuality mQuality;
+    private ImageView mImageView;
+
+    public ImageView getCurrentImageView() {
+        return mImageView;
+    }
 
     public CustomPagerAdapter(OnFragmentInteractionListener interactionListener, List<Feed> feed, ImageQuality quality) {
         mInteractionListener = interactionListener;
@@ -65,6 +71,8 @@ public class CustomPagerAdapter extends PagerAdapter {
                 }
             }
         });
+
+        mImageView = holder.mImageView;
 
         if (mQuality.equals(ImageQuality.STANDARD)) {
             StringBuilder sb = new StringBuilder();

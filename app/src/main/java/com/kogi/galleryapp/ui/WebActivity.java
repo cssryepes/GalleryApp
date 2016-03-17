@@ -60,6 +60,7 @@ public class WebActivity extends AppCompatActivity {
         switch (item.getItemId()) {
             case android.R.id.home:
                 finish();
+                overridePendingTransition(R.anim.activity_back_in, R.anim.activity_back_out);
                 return true;
 
             case R.id.action_share:
@@ -72,6 +73,11 @@ public class WebActivity extends AppCompatActivity {
         }
     }
 
+    @Override
+    public void onBackPressed() {
+        super.onBackPressed();
+        overridePendingTransition(R.anim.activity_back_in, R.anim.activity_back_out);
+    }
 
     private void shareContent() {
         Intent sharingIntent = new Intent(android.content.Intent.ACTION_SEND);
@@ -79,5 +85,11 @@ public class WebActivity extends AppCompatActivity {
         sharingIntent.putExtra(android.content.Intent.EXTRA_SUBJECT, getString(R.string.intent_extra_subject));
         sharingIntent.putExtra(android.content.Intent.EXTRA_TEXT, mFeed.getLink());
         startActivity(Intent.createChooser(sharingIntent, getString(R.string.intent_extra_chooser)));
+    }
+
+
+    @Override
+    public void overridePendingTransition(int enterAnim, int exitAnim) {
+        super.overridePendingTransition(enterAnim, exitAnim);
     }
 }

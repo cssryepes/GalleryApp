@@ -162,9 +162,15 @@ public class FeedActivity extends AppCompatActivity implements OnSocialMediaList
             Intent myIntent = new Intent(FeedActivity.this, DetailFeedActivity.class);
             myIntent.putExtras(Utils.getBundle(mFeed, position));
             startActivity(myIntent);
+            overridePendingTransition(R.anim.activity_in, R.anim.activity_out);
 
         }
 
+    }
+
+    @Override
+    public void overridePendingTransition(int enterAnim, int exitAnim) {
+        super.overridePendingTransition(enterAnim, exitAnim);
     }
 
     @Override

@@ -72,6 +72,7 @@ public class DetailFeedActivity extends AppCompatActivity implements OnFragmentI
             Intent myIntent = new Intent(DetailFeedActivity.this, WebActivity.class);
             myIntent.putExtras(Utils.getBundle(mFeed.get(position)));
             startActivity(myIntent);
+            overridePendingTransition(R.anim.activity_in, R.anim.activity_out);
 
         } else {
             mPosition = position;
@@ -98,11 +99,23 @@ public class DetailFeedActivity extends AppCompatActivity implements OnFragmentI
     }
 
     @Override
+    public void onBackPressed() {
+        super.onBackPressed();
+        overridePendingTransition(R.anim.activity_back_in, R.anim.activity_back_out);
+    }
+
+    @Override
+    public void overridePendingTransition(int enterAnim, int exitAnim) {
+        super.overridePendingTransition(enterAnim, exitAnim);
+    }
+
+    @Override
     public boolean onOptionsItemSelected(MenuItem item) {
         switch (item.getItemId()) {
             case android.R.id.home:
 //                NavUtils.navigateUpFromSameTask(this);
                 finish();
+                overridePendingTransition(R.anim.activity_back_in, R.anim.activity_back_out);
                 return true;
 
             case R.id.action_share:
@@ -126,7 +139,7 @@ public class DetailFeedActivity extends AppCompatActivity implements OnFragmentI
         Intent sharingIntent = new Intent(android.content.Intent.ACTION_SEND);
         sharingIntent.setType("text/plain");
         sharingIntent.putExtra(android.content.Intent.EXTRA_SUBJECT, getString(R.string.intent_extra_subject));
-        sharingIntent.putExtra(android.content.Intent.EXTRA_TEXT,imageUrl);
+        sharingIntent.putExtra(android.content.Intent.EXTRA_TEXT, imageUrl);
         startActivity(Intent.createChooser(sharingIntent, getString(R.string.intent_extra_chooser)));
     }
 }

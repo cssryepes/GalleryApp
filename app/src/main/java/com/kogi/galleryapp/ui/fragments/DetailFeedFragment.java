@@ -48,7 +48,7 @@ public class DetailFeedFragment extends Fragment implements ViewPager.OnPageChan
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
-        View view = inflater.inflate(R.layout.fragment_detail_feed, container, false);
+        View view = inflater.inflate(R.layout.fragment_feed_detail, container, false);
         mCustomPagerAdapter = new CustomPagerAdapter(mListener, mFeed, ImageQuality.STANDARD);
         mViewPager = (ViewPager) view.findViewById(R.id.pager);
         mViewPager.setAdapter(mCustomPagerAdapter);
