@@ -6,7 +6,6 @@ import android.support.design.widget.Snackbar;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentTransaction;
-import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.view.Menu;
 import android.view.MenuInflater;
@@ -30,7 +29,7 @@ import com.kogi.galleryapp.ui.listeners.OnGridFragmentInteractionListener;
 import java.util.ArrayList;
 import java.util.List;
 
-public class FeedActivity extends AppCompatActivity implements OnSocialMediaListener, OnGridFragmentInteractionListener, OnFragmentInteractionListener {
+public class FeedActivity extends BaseActivity implements OnSocialMediaListener, OnGridFragmentInteractionListener, OnFragmentInteractionListener {
 
     private List<Feed> mFeed;
     private SocialMediaModel mModel;
@@ -43,33 +42,81 @@ public class FeedActivity extends AppCompatActivity implements OnSocialMediaList
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_feed);
 
-        mFeed = new ArrayList<>();
-        mModel = new SocialMediaModel(this);
-        mModel.getFeedSocialMedia(SocialMediaType.INSTAGRAM);
-
         mContainer = (LinearLayout) findViewById(R.id.container);
 
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
 
         toolbar.setLogo(R.drawable.ic_home_white_48dp);
+
+        showProgressDialog(null, getString(R.string.prompt_downloading_feed));
+
+        mFeed = new ArrayList<>();
+        mModel = new SocialMediaModel(this);
+        mModel.getFeedSocialMedia(SocialMediaType.INSTAGRAM);
+    }
+
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+        mModel.removeOnSocialMediaListener();
+    }
+
+    private void setFragments(int newDataLenght) {
+        FragmentManager manager = getSupportFragmentManager();
+        FragmentTransaction transaction = manager.beginTransaction();
+
+        //Remove last fragment
+        Fragment fragment = manager.findFragmentByTag(getString(R.string.fragment_bottom));
+        if (fragment == null) {
+            //Add fragment
+            mGridFeedFragment = GridFeedFragment.newInstance(mFeed);
+            transaction.add(R.id.fragmentBottom, mGridFeedFragment, getString(R.string.fragment_bottom));
+
+        } else {
+            if (fragment instanceof GridFeedFragment) {
+                mGridFeedFragment = (GridFeedFragment) fragment;
+                notifyDataSetChanged(newDataLenght);
+            }
+        }
+
+
+        fragment = manager.findFragmentByTag(getString(R.string.fragment_top));
+        if (fragment == null) {
+            //Add fragment
+            mPreviewFeedFragment = PreviewFeedFragment.newInstance(mFeed);
+            transaction.add(R.id.fragmentTop, mPreviewFeedFragment, getString(R.string.fragment_top)).commit();
+
+        } else {
+            if (fragment instanceof PreviewFeedFragment) {
+                mPreviewFeedFragment = (PreviewFeedFragment) fragment;
+                notifyDataSetChanged(newDataLenght);
+            }
+        }
+    }
+
+    private void notifyDataSetChanged(int newDataLenght) {
+        if (mPreviewFeedFragment != null) {
+            mPreviewFeedFragment.notifyDataSetChanged(newDataLenght);
+        }
+        if (mGridFeedFragment != null) {
+            mGridFeedFragment.notifyDataSetChanged(newDataLenght);
+        }
     }
 
     @Override
     public void onDataReceived(ResponseStatus status, Object data) {
 
+        dismissDialog();
+
         if (status.equals(ResponseStatus.ERROR)) {
-            //append log
+            showAlertDialog(getString(R.string.prompt_error), (String) data,
+                    getString(R.string.prompt_ok));
+
         } else if (status.equals(ResponseStatus.OK) || status.equals(ResponseStatus.NO_CONNECTION)) {
             if (status.equals(ResponseStatus.NO_CONNECTION)) {
-                Snackbar.make(mContainer, status.name(), Snackbar.LENGTH_INDEFINITE)
-                        .setAction("OK", new View.OnClickListener() {
-                            @Override
-                            public void onClick(View v) {
-                                //TASK
-
-                            }
-                        }).show();
+                showAlertDialog(getString(R.string.prompt_error), (String) data,
+                        getString(R.string.prompt_ok));
             }
 
             if (data instanceof List<?>) {
@@ -89,55 +136,6 @@ public class FeedActivity extends AppCompatActivity implements OnSocialMediaList
         }
     }
 
-    private void setFragments(int newDataLenght) {
-        FragmentManager manager = getSupportFragmentManager();
-        FragmentTransaction transaction = manager.beginTransaction();
-
-        //Remove last fragment
-        Fragment fragment = manager.findFragmentByTag("FragmentBottom");
-        if (fragment == null) {
-            //Add fragment
-            mGridFeedFragment = GridFeedFragment.newInstance(mFeed);
-            transaction.add(R.id.fragmentBottom, mGridFeedFragment, "FragmentBottom");
-
-        } else {
-            if (fragment instanceof GridFeedFragment) {
-                mGridFeedFragment = (GridFeedFragment) fragment;
-                notifyDataSetChanged(newDataLenght);
-            }
-        }
-
-
-        fragment = manager.findFragmentByTag("FragmentBottom");
-        if (fragment == null) {
-            //Add fragment
-            mPreviewFeedFragment = PreviewFeedFragment.newInstance(mFeed);
-            transaction.add(R.id.fragmentTop, mPreviewFeedFragment, "FragmentTop").commit();
-
-        } else {
-            if (fragment instanceof PreviewFeedFragment) {
-                mPreviewFeedFragment = (PreviewFeedFragment) fragment;
-                notifyDataSetChanged(newDataLenght);
-            }
-        }
-    }
-
-    private void notifyDataSetChanged(int newDataLenght) {
-        if (mPreviewFeedFragment != null) {
-            mPreviewFeedFragment.notifyDataSetChanged(newDataLenght);
-        }
-        if (mGridFeedFragment != null) {
-            mGridFeedFragment.notifyDataSetChanged(newDataLenght);
-            mGridFeedFragment.setRefreshLayout(false);
-        }
-    }
-
-
-    @Override
-    protected void onDestroy() {
-        super.onDestroy();
-        mModel.removeOnSocialMediaListener();
-    }
 
     @Override
     public void onRefreshGrid() {
@@ -160,7 +158,7 @@ public class FeedActivity extends AppCompatActivity implements OnSocialMediaList
 
         } else if (quality.equals(ImageQuality.LOW)) {
             Intent myIntent = new Intent(FeedActivity.this, DetailFeedActivity.class);
-            myIntent.putExtras(Utils.getBundle(mFeed, position));
+            myIntent.putExtras(Utils.getListFeedBundle(mFeed, position));
             startActivity(myIntent);
             overridePendingTransition(R.anim.activity_in, R.anim.activity_out);
 
@@ -184,7 +182,7 @@ public class FeedActivity extends AppCompatActivity implements OnSocialMediaList
     public void onItemLongSelected(int position, ImageQuality quality) {
 
         Snackbar.make(mContainer, mFeed.get(position).getCaption(), Snackbar.LENGTH_INDEFINITE)
-                .setAction(R.string.snack_dismiss, new View.OnClickListener() {
+                .setAction(R.string.prompt_dismiss, new View.OnClickListener() {
                     @Override
                     public void onClick(View v) {
                     }
@@ -196,7 +194,7 @@ public class FeedActivity extends AppCompatActivity implements OnSocialMediaList
         switch (item.getItemId()) {
             case R.id.action_refresh:
                 mModel.getFeedSocialMedia(SocialMediaType.INSTAGRAM);
-                mGridFeedFragment.setRefreshLayout(true);
+                showProgressDialog(null, getString(R.string.prompt_downloading_feed));
                 return true;
 
             default:
@@ -204,4 +202,5 @@ public class FeedActivity extends AppCompatActivity implements OnSocialMediaList
 
         }
     }
+
 }

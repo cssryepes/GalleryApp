@@ -48,7 +48,7 @@ public class PreviewFeedFragment extends Fragment implements ViewPager.OnPageCha
 
     public static PreviewFeedFragment newInstance(List<Feed> feed) {
         PreviewFeedFragment fragment = new PreviewFeedFragment();
-        fragment.setArguments(Utils.getBundle(feed, 0));
+        fragment.setArguments(Utils.getListFeedBundle(feed, 0));
         return fragment;
     }
 

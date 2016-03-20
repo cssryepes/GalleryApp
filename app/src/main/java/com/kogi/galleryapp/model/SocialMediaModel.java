@@ -40,7 +40,7 @@ public class SocialMediaModel {
             new DownloadFeed().execute("https://api.instagram.com/v1/media/popular", "client_id", "05132c49e9f148ec9b8282af33f88ac7");
 
         } else {
-            sendDataListener(ResponseStatus.NO_CONNECTION, GalleryApp.getInstance().getString(R.string.no_connectivity));
+            sendDataListener(ResponseStatus.NO_CONNECTION, GalleryApp.getInstance().getString(R.string.prompt_no_connectivity));
 
         }
 

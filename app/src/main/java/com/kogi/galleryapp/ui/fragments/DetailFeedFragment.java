@@ -31,7 +31,7 @@ public class DetailFeedFragment extends Fragment implements ViewPager.OnPageChan
 
     public static DetailFeedFragment newInstance(List<Feed> feed, int position) {
         DetailFeedFragment fragment = new DetailFeedFragment();
-        fragment.setArguments(Utils.getBundle(feed, position));
+        fragment.setArguments(Utils.getListFeedBundle(feed, position));
         return fragment;
     }
 
@@ -41,7 +41,7 @@ public class DetailFeedFragment extends Fragment implements ViewPager.OnPageChan
         setRetainInstance(true);
         if (getArguments() != null) {
             mFeed = getArguments().getParcelableArrayList(Utils.FEED);
-            mPosition = getArguments().getInt(Utils.POSITION);
+            mPosition = getArguments().getInt(Utils.FEED_POSITION);
         }
     }
 

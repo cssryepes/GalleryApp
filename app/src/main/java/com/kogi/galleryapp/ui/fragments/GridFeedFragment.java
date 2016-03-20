@@ -37,10 +37,6 @@ public class GridFeedFragment extends Fragment implements SwipeRefreshLayout.OnR
         gridRecyclerViewAdapter.notifyDataSetChanged();
     }
 
-    public void setRefreshLayout(boolean refresh) {
-        swipeRefreshLayout.setRefreshing(refresh);
-    }
-
     public void showFeed(int position) {
         if (gridLayoutManager != null) {
             int positionTemp = gridRecyclerViewAdapter.selectedPosition;
@@ -56,7 +52,7 @@ public class GridFeedFragment extends Fragment implements SwipeRefreshLayout.OnR
 
     public static GridFeedFragment newInstance(List<Feed> feed) {
         GridFeedFragment fragment = new GridFeedFragment();
-        fragment.setArguments(Utils.getBundle(feed, 0));
+        fragment.setArguments(Utils.getListFeedBundle(feed, 0));
         return fragment;
     }
 

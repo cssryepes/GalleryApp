@@ -18,7 +18,11 @@ public class Utils {
 
     public static final String TAG = "GALLERY_APP";
     public static final String FEED = "FEED";
-    public static final String POSITION = "POSITION";
+    public static final String FEED_POSITION = "FEED_POSITION";
+    public static final String DIALOG_STYLE = "DIALOG_STYLE";
+    public static final String DIALOG_TITLE = "DIALOG_TITLE";
+    public static final String DIALOG_BODY = "DIALOG_BODY";
+    public static final String DIALOG_BUTTON = "DIALOG_BUTTON";
 
     public static String getStackTrace(Exception e) {
         StringWriter errors = new StringWriter();
@@ -53,16 +57,26 @@ public class Utils {
         }
     }
 
-    public static Bundle getBundle(List<Feed> feed, int position) {
+    public static Bundle getListFeedBundle(List<Feed> feed, int position) {
         Bundle args = new Bundle();
         args.putParcelableArrayList(FEED, (ArrayList<? extends Parcelable>) feed);
-        args.putInt(POSITION, position);
+        args.putInt(FEED_POSITION, position);
         return args;
     }
 
-    public static Bundle getBundle(Feed feed) {
+    public static Bundle getFeedBundle(Feed feed) {
         Bundle args = new Bundle();
         args.putParcelable(FEED, feed);
+        return args;
+    }
+
+
+    public static Bundle getDialogBundle(int style,String title, String message, String button) {
+        Bundle args = new Bundle();
+        args.putInt(DIALOG_STYLE, style);
+        args.putString(DIALOG_TITLE, title);
+        args.putString(DIALOG_BODY, message);
+        args.putString(DIALOG_BUTTON, button);
         return args;
     }
 

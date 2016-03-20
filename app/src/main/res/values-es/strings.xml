@@ -4,9 +4,6 @@
     <!--URLs-->
     <string name="format_url">%1$s?%2$s=%3$s</string>
 
-    <!--Messages-->
-    <string name="no_connectivity">Debes revisar tu conexión</string>
-
     <!--Image description-->
     <string name="thumbnail">miniatura</string>
     <string name="preview">previsualización</string>
@@ -25,5 +22,15 @@
     <string name="intent_extra_chooser">Compartir URL Imagen</string>
 
     <!--SnackBar-->
-    <string name="snack_dismiss">Dismiss</string>
+    <string name="prompt_dismiss">Cerrar</string>
+    <string name="prompt_ok">OK</string>
+    <string name="prompt_downloading_feed">Descargando información…</string>
+    <string name="prompt_error">Error</string>
+    <string name="prompt_no_connectivity">Debes revisar tu conexión</string>
+
+    <!--Fragment ID-->
+    <string name="fragment_bottom">BottomFragment</string>
+    <string name="fragment_top">TopFragment</string>
+    <string name="fragment_full">FullFragment</string>
+    <string name="fragment_dialog">DialogFragment</string>
 </resources>

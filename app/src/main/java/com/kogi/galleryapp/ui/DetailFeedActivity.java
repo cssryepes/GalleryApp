@@ -6,7 +6,6 @@ import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentTransaction;
 import android.support.v7.app.ActionBar;
-import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.view.Menu;
 import android.view.MenuInflater;
@@ -22,7 +21,7 @@ import com.kogi.galleryapp.ui.listeners.OnFragmentInteractionListener;
 
 import java.util.List;
 
-public class DetailFeedActivity extends AppCompatActivity implements OnFragmentInteractionListener {
+public class DetailFeedActivity extends BaseActivity implements OnFragmentInteractionListener {
 
     private List<Feed> mFeed;
     private int mPosition;
@@ -36,16 +35,16 @@ public class DetailFeedActivity extends AppCompatActivity implements OnFragmentI
         Bundle extras = getIntent().getExtras();
         if (extras != null) {
             mFeed = extras.getParcelableArrayList(Utils.FEED);
-            mPosition = extras.getInt(Utils.POSITION);
+            mPosition = extras.getInt(Utils.FEED_POSITION);
         }
 
         FragmentManager manager = getSupportFragmentManager();
         FragmentTransaction transaction = manager.beginTransaction();
 
-        Fragment fragment = manager.findFragmentByTag("FullFragment");
+        Fragment fragment = manager.findFragmentByTag(getString(R.string.fragment_full));
         if (fragment == null) {
             DetailFeedFragment detail = DetailFeedFragment.newInstance(mFeed, mPosition);
-            transaction.add(R.id.full_fragment, detail, "FullFragment");
+            transaction.add(R.id.full_fragment, detail, getString(R.string.fragment_full));
             transaction.commit();
         }
 
@@ -55,7 +54,7 @@ public class DetailFeedActivity extends AppCompatActivity implements OnFragmentI
         mActionBar = getSupportActionBar();
         if (mActionBar != null) {
             mActionBar.setDisplayHomeAsUpEnabled(true);
-            mActionBar.setTitle( mFeed.get(mPosition).getCaption());
+            mActionBar.setTitle(mFeed.get(mPosition).getCaption());
         }
 
     }
@@ -70,14 +69,14 @@ public class DetailFeedActivity extends AppCompatActivity implements OnFragmentI
         if (mPosition == position & quality.equals(ImageQuality.STANDARD)) {
             mPosition = position;
             Intent myIntent = new Intent(DetailFeedActivity.this, WebActivity.class);
-            myIntent.putExtras(Utils.getBundle(mFeed.get(position)));
+            myIntent.putExtras(Utils.getFeedBundle(mFeed.get(position)));
             startActivity(myIntent);
             overridePendingTransition(R.anim.activity_in, R.anim.activity_out);
 
         } else {
             mPosition = position;
             if (mActionBar != null) {
-                mActionBar.setTitle( mFeed.get(mPosition).getCaption());
+                mActionBar.setTitle(mFeed.get(mPosition).getCaption());
             }
         }
     }
@@ -119,7 +118,11 @@ public class DetailFeedActivity extends AppCompatActivity implements OnFragmentI
                 return true;
 
             case R.id.action_share:
-                shareContent();
+                for (Image image : mFeed.get(mPosition).getImages()) {
+                    if (image.getQuality().equals(ImageQuality.STANDARD)) {
+                        shareContent(image.getUrl());
+                    }
+                }
                 return true;
 
             default:
@@ -128,18 +131,4 @@ public class DetailFeedActivity extends AppCompatActivity implements OnFragmentI
         }
     }
 
-    private void shareContent() {
-        String imageUrl = null;
-        List<Image> images = mFeed.get(mPosition).getImages();
-        for (Image image : images) {
-            if (image.getQuality().equals(ImageQuality.STANDARD))
-                imageUrl = image.getUrl();
-        }
-
-        Intent sharingIntent = new Intent(android.content.Intent.ACTION_SEND);
-        sharingIntent.setType("text/plain");
-        sharingIntent.putExtra(android.content.Intent.EXTRA_SUBJECT, getString(R.string.intent_extra_subject));
-        sharingIntent.putExtra(android.content.Intent.EXTRA_TEXT, imageUrl);
-        startActivity(Intent.createChooser(sharingIntent, getString(R.string.intent_extra_chooser)));
-    }
 }
