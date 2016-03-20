@@ -62,7 +62,7 @@ public class FeedActivity extends BaseActivity implements OnSocialMediaListener,
         mModel.removeOnSocialMediaListener();
     }
 
-    private void setFragments(int newDataLenght) {
+    private void setFragments(int newDataLength) {
         FragmentManager manager = getSupportFragmentManager();
         FragmentTransaction transaction = manager.beginTransaction();
 
@@ -76,7 +76,6 @@ public class FeedActivity extends BaseActivity implements OnSocialMediaListener,
         } else {
             if (fragment instanceof GridFeedFragment) {
                 mGridFeedFragment = (GridFeedFragment) fragment;
-                notifyDataSetChanged(newDataLenght);
             }
         }
 
@@ -90,17 +89,21 @@ public class FeedActivity extends BaseActivity implements OnSocialMediaListener,
         } else {
             if (fragment instanceof PreviewFeedFragment) {
                 mPreviewFeedFragment = (PreviewFeedFragment) fragment;
-                notifyDataSetChanged(newDataLenght);
             }
+        }
+
+        if (fragment != null) {
+            notifyDataSetChanged(newDataLength);
         }
     }
 
-    private void notifyDataSetChanged(int newDataLenght) {
+    private void notifyDataSetChanged(int newDataLength) {
         if (mPreviewFeedFragment != null) {
-            mPreviewFeedFragment.notifyDataSetChanged(newDataLenght);
+            mPreviewFeedFragment.notifyDataSetChanged(newDataLength);
         }
         if (mGridFeedFragment != null) {
-            mGridFeedFragment.notifyDataSetChanged(newDataLenght);
+            mGridFeedFragment.notifyDataSetChanged(newDataLength);
+            mGridFeedFragment.setRefreshLayout(false);
         }
     }
 
@@ -127,7 +130,7 @@ public class FeedActivity extends BaseActivity implements OnSocialMediaListener,
 
             if (data instanceof List<?>) {
                 List<?> castedData = (List<?>) data;
-                int newDataLenght = castedData.size();
+                int newDataLength = castedData.size();
                 for (Object object : castedData) {
                     if (object instanceof Feed) {
                         mFeed.add(0, (Feed) object);
@@ -135,7 +138,7 @@ public class FeedActivity extends BaseActivity implements OnSocialMediaListener,
                 }
 
                 if (!mFeed.isEmpty()) {
-                    setFragments(newDataLenght);
+                    setFragments(newDataLength);
                 }
 
             }
@@ -181,7 +184,6 @@ public class FeedActivity extends BaseActivity implements OnSocialMediaListener,
 
     @Override
     public void onItemLongSelected(int position, ImageQuality quality) {
-
         Snackbar.make(mContainer, mFeed.get(position).getCaption(), Snackbar.LENGTH_INDEFINITE)
                 .setAction(R.string.prompt_dismiss, new View.OnClickListener() {
                     @Override

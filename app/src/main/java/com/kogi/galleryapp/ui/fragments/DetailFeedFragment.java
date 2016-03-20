@@ -15,6 +15,7 @@ import com.kogi.galleryapp.domain.enums.ImageQuality;
 import com.kogi.galleryapp.ui.fragments.adapters.CustomPagerAdapter;
 import com.kogi.galleryapp.ui.helpers.DepthPageTransformer;
 import com.kogi.galleryapp.ui.listeners.OnFragmentInteractionListener;
+import com.viewpagerindicator.CirclePageIndicator;
 
 import java.util.List;
 
@@ -22,8 +23,6 @@ public class DetailFeedFragment extends Fragment implements ViewPager.OnPageChan
 
     private OnFragmentInteractionListener mListener;
     private List<Feed> mFeed;
-    private CustomPagerAdapter mCustomPagerAdapter;
-    private ViewPager mViewPager;
     private int mPosition;
 
     public DetailFeedFragment() {
@@ -49,12 +48,18 @@ public class DetailFeedFragment extends Fragment implements ViewPager.OnPageChan
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.fragment_feed_detail, container, false);
-        mCustomPagerAdapter = new CustomPagerAdapter(mListener, mFeed, ImageQuality.STANDARD);
-        mViewPager = (ViewPager) view.findViewById(R.id.pager);
-        mViewPager.setAdapter(mCustomPagerAdapter);
-        mViewPager.setPageTransformer(true, new DepthPageTransformer());
-        mViewPager.addOnPageChangeListener(this);
-        mViewPager.setCurrentItem(mPosition);
+
+        CustomPagerAdapter customPagerAdapter = new CustomPagerAdapter(mListener, mFeed, ImageQuality.STANDARD);
+
+        ViewPager viewPager = (ViewPager) view.findViewById(R.id.pager);
+        viewPager.setAdapter(customPagerAdapter);
+        viewPager.setPageTransformer(true, new DepthPageTransformer());
+        viewPager.addOnPageChangeListener(this);
+        viewPager.setCurrentItem(mPosition);
+
+        CirclePageIndicator circlePageIndicator = (CirclePageIndicator) view.findViewById(R.id.indicator);
+        circlePageIndicator.setViewPager(viewPager);
+
         return view;
     }
 

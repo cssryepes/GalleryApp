@@ -33,7 +33,7 @@ public class GridFeedFragment extends Fragment implements SwipeRefreshLayout.OnR
     public GridFeedFragment() {
     }
 
-    public void notifyDataSetChanged(int newDataLenght) {
+    public void notifyDataSetChanged(int newDataLength) {
         gridRecyclerViewAdapter.notifyDataSetChanged();
     }
 
@@ -107,6 +107,10 @@ public class GridFeedFragment extends Fragment implements SwipeRefreshLayout.OnR
     @Override
     public void onRefresh() {
         mGridListener.onRefreshGrid();
+    }
+
+    public void setRefreshLayout(boolean refresh) {
+        swipeRefreshLayout.setRefreshing(refresh);
     }
 
 }
