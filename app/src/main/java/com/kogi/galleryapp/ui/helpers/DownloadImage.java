@@ -9,7 +9,6 @@ import com.kogi.galleryapp.Utils;
 import com.kogi.galleryapp.domain.HttpConnection;
 import com.kogi.galleryapp.domain.entities.Image;
 import com.kogi.galleryapp.domain.enums.ResponseStatus;
-import com.kogi.galleryapp.ui.helpers.ViewHolder;
 
 import java.util.List;
 
@@ -18,15 +17,12 @@ public class DownloadImage extends AsyncTask<ViewHolder, Void, ViewHolder> {
 
     @Override
     protected ViewHolder doInBackground(ViewHolder... params) {
-//        Utils.print(Log.DEBUG, params[0].toString());
         try {
             List<Image> images = params[0].mFeed.getImages();
             for (Image image : images) {
                 if (image.getQuality().equals(params[0].mQuality)) {
 
-
                     GalleryApp app = GalleryApp.getInstance();
-
                     Bitmap bitmapFromCache = app.getBitmapFromCache(image.getUrl());
 
                     if (bitmapFromCache != null) {

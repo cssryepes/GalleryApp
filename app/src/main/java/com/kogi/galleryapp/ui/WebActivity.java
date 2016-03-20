@@ -1,6 +1,7 @@
 package com.kogi.galleryapp.ui;
 
 import android.annotation.SuppressLint;
+import android.graphics.Bitmap;
 import android.os.Bundle;
 import android.support.v7.app.ActionBar;
 import android.support.v7.widget.Toolbar;
@@ -11,11 +12,13 @@ import android.webkit.WebSettings;
 import android.webkit.WebView;
 import android.webkit.WebViewClient;
 
+import com.kogi.galleryapp.GalleryApp;
 import com.kogi.galleryapp.R;
 import com.kogi.galleryapp.Utils;
 import com.kogi.galleryapp.domain.entities.Feed;
+import com.kogi.galleryapp.ui.listeners.OnDialogInteractionListener;
 
-public class WebActivity extends BaseActivity {
+public class WebActivity extends BaseActivity implements OnDialogInteractionListener {
 
     private Feed mFeed;
 
@@ -30,12 +33,6 @@ public class WebActivity extends BaseActivity {
             mFeed = extras.getParcelable(Utils.FEED);
         }
 
-        WebView webView = (WebView) findViewById(R.id.web_view);
-        WebSettings webSettings = webView.getSettings();
-        webSettings.setJavaScriptEnabled(true);
-        webView.setWebViewClient(new WebViewClient());
-        webView.loadUrl(mFeed.getLink());
-
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
 
@@ -44,6 +41,32 @@ public class WebActivity extends BaseActivity {
             mActionBar.setDisplayHomeAsUpEnabled(true);
             mActionBar.setTitle(mFeed.getLink());
         }
+
+        if (!GalleryApp.getInstance().isNetworkAvailable()) {
+            showAlertDialog(getString(R.string.prompt_error), getString(R.string.prompt_no_connectivity),
+                    getString(R.string.prompt_back));
+            return;
+        }
+
+        WebView webView = (WebView) findViewById(R.id.web_view);
+        WebSettings webSettings = webView.getSettings();
+        webSettings.setJavaScriptEnabled(true);
+        webView.setWebViewClient(new WebViewClient() {
+            @Override
+            public void onPageStarted(WebView view, String url, Bitmap favicon) {
+                super.onPageStarted(view, url, favicon);
+                WebActivity.this.showProgressDialog(null, getString(R.string.prompt_loading));
+            }
+
+            @Override
+            public void onPageFinished(WebView view, String url) {
+                super.onPageFinished(view, url);
+                WebActivity.this.dismissDialog();
+            }
+
+        });
+        webView.loadUrl(mFeed.getLink());
+
     }
 
     @Override
@@ -77,8 +100,12 @@ public class WebActivity extends BaseActivity {
         overridePendingTransition(R.anim.activity_back_in, R.anim.activity_back_out);
     }
 
+
     @Override
-    public void overridePendingTransition(int enterAnim, int exitAnim) {
-        super.overridePendingTransition(enterAnim, exitAnim);
+    public void onPositiveButtonClicked() {
+        super.onPositiveButtonClicked();
+        finish();
+        overridePendingTransition(R.anim.activity_back_in, R.anim.activity_back_out);
     }
+
 }

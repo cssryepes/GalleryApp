@@ -6,6 +6,7 @@ import android.graphics.Bitmap;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
 import android.os.Environment;
+import android.util.Log;
 import android.util.LruCache;
 
 import com.kogi.galleryapp.ui.helpers.DiskCache;
@@ -55,14 +56,14 @@ public class GalleryApp extends Application {
             File cacheDir = getDiskCacheDir(this, DISK_CACHE_SUBDIR);
             mDiskCache = DiskCache.open(cacheDir, 1, DISK_CACHE_SIZE);
         } catch (IOException e) {
-            e.printStackTrace();
+            Utils.print(Log.ERROR, Utils.getStackTrace(e));
         }
 
     }
 
     // Creates a unique subdirectory of the designated app cache directory. Tries to use external
 // but if not mounted, falls back on internal storage.
-    public static File getDiskCacheDir(Context context, String uniqueName) {
+    private File getDiskCacheDir(Context context, String uniqueName) {
         // Check if media is mounted or storage is built-in, if so, try and use external cache dir
         // otherwise use internal cache dir
         final String cachePath =
@@ -91,24 +92,44 @@ public class GalleryApp extends Application {
             bitmap.compress(Bitmap.CompressFormat.JPEG, 100, stream);
             mDiskCache.put(key, new ByteArrayInputStream(stream.toByteArray()));
         } catch (IOException e) {
-            e.printStackTrace();
+            Utils.print(Log.ERROR, Utils.getStackTrace(e));
         }
     }
-
 
     public Bitmap getBitmapFromCache(String key) {
         Bitmap bitmap = mMemoryCache.get(key);
         if (bitmap == null) {
             try {
                 DiskCache.BitmapEntry bitmapEntry = mDiskCache.getBitmap(key);
-                if (bitmapEntry != null)
+                if (bitmapEntry != null) {
                     return bitmapEntry.getBitmap();
+                }
             } catch (IOException e) {
-                e.printStackTrace();
+                Utils.print(Log.ERROR, Utils.getStackTrace(e));
             }
         }
         return bitmap;
     }
 
+
+    public void addJSONToCache(String key, String json) {
+        try {
+            mDiskCache.put(key, json);
+        } catch (IOException e) {
+            Utils.print(Log.ERROR, Utils.getStackTrace(e));
+        }
+    }
+
+    public String getJSONFromCache(String key) {
+        try {
+            DiskCache.StringEntry entry = mDiskCache.getString(key);
+            if (entry != null) {
+                return entry.getString();
+            }
+        } catch (IOException e) {
+            Utils.print(Log.ERROR, Utils.getStackTrace(e));
+        }
+        return null;
+    }
 
 }

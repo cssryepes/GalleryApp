@@ -27,6 +27,8 @@
     <string name="prompt_downloading_feed">Descargando información…</string>
     <string name="prompt_error">Error</string>
     <string name="prompt_no_connectivity">Debes revisar tu conexión</string>
+    <string name="prompt_loading">Cargando…</string>
+    <string name="prompt_back">Atrás</string>
 
     <!--Fragment ID-->
     <string name="fragment_bottom">BottomFragment</string>

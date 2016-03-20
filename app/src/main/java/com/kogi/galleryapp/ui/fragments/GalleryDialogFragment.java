@@ -10,7 +10,6 @@ import android.support.v7.app.AlertDialog;
 
 import com.kogi.galleryapp.Utils;
 import com.kogi.galleryapp.ui.listeners.OnDialogInteractionListener;
-import com.kogi.galleryapp.ui.listeners.OnFragmentInteractionListener;
 
 public class GalleryDialogFragment extends DialogFragment {
 
@@ -62,7 +61,7 @@ public class GalleryDialogFragment extends DialogFragment {
             if (mButton != null) {
                 builder.setPositiveButton(mButton, new DialogInterface.OnClickListener() {
                     public void onClick(DialogInterface dialog, int id) {
-                        mListener.onPossitiveButtonClicked();
+                        mListener.onPositiveButtonClicked();
                     }
                 });
             }
@@ -92,7 +91,7 @@ public class GalleryDialogFragment extends DialogFragment {
     @Override
     public void onAttach(Context context) {
         super.onAttach(context);
-        if (context instanceof OnDialogInteractionListener && context instanceof OnFragmentInteractionListener) {
+        if (context instanceof OnDialogInteractionListener) {
             mListener = (OnDialogInteractionListener) context;
         } else {
             throw new RuntimeException(context.toString()

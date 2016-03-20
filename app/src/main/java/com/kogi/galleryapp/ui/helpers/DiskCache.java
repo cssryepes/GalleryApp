@@ -63,11 +63,11 @@ public class DiskCache {
         diskLruCache = DiskLruCache.open(dir, mAppVersion, 2, maxSize);
     }
 
-    public DiskLruCache getCache() {
+    private DiskLruCache getCache() {
         return diskLruCache;
     }
 
-    public InputStreamEntry getInputStream(String key) throws IOException {
+    private InputStreamEntry getInputStream(String key) throws IOException {
         DiskLruCache.Snapshot snapshot = diskLruCache.get(toInternalKey(key));
         if (snapshot == null) return null;
         return new InputStreamEntry(snapshot, readMetadata(snapshot));
@@ -104,11 +104,11 @@ public class DiskCache {
         return true;
     }
 
-    public OutputStream openStream(String key) throws IOException {
+    private OutputStream openStream(String key) throws IOException {
         return openStream(key, new HashMap<String, Serializable>());
     }
 
-    public OutputStream openStream(String key, Map<String, ? extends Serializable> metadata)
+    private OutputStream openStream(String key, Map<String, ? extends Serializable> metadata)
             throws IOException {
         DiskLruCache.Editor editor = diskLruCache.edit(toInternalKey(key));
         try {
@@ -125,7 +125,7 @@ public class DiskCache {
         put(key, is, new HashMap<String, Serializable>());
     }
 
-    public void put(String key, InputStream is, Map<String, Serializable> annotations)
+    private void put(String key, InputStream is, Map<String, Serializable> annotations)
             throws IOException {
         OutputStream os = null;
         try {
@@ -140,7 +140,7 @@ public class DiskCache {
         put(key, value, new HashMap<String, Serializable>());
     }
 
-    public void put(String key, String value, Map<String, ? extends Serializable> annotations)
+    private void put(String key, String value, Map<String, ? extends Serializable> annotations)
             throws IOException {
         OutputStream cos = null;
         try {

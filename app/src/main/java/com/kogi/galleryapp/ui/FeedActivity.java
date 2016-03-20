@@ -115,7 +115,13 @@ public class FeedActivity extends BaseActivity implements OnSocialMediaListener,
 
         } else if (status.equals(ResponseStatus.OK) || status.equals(ResponseStatus.NO_CONNECTION)) {
             if (status.equals(ResponseStatus.NO_CONNECTION)) {
-                showAlertDialog(getString(R.string.prompt_error), (String) data,
+                String message = null;
+                if (data instanceof String) {
+                    message = (String) data;
+                } else if (data instanceof List<?>) {
+                    message = getString(R.string.prompt_no_connectivity);
+                }
+                showAlertDialog(getString(R.string.prompt_error), message,
                         getString(R.string.prompt_ok));
             }
 
@@ -139,7 +145,7 @@ public class FeedActivity extends BaseActivity implements OnSocialMediaListener,
 
     @Override
     public void onRefreshGrid() {
-        mModel.getFeedSocialMedia(SocialMediaType.INSTAGRAM);
+        mModel.refreshFeedSocialMedia(SocialMediaType.INSTAGRAM);
     }
 
     @Override
@@ -157,18 +163,13 @@ public class FeedActivity extends BaseActivity implements OnSocialMediaListener,
             }
 
         } else if (quality.equals(ImageQuality.LOW)) {
-            Intent myIntent = new Intent(FeedActivity.this, DetailFeedActivity.class);
-            myIntent.putExtras(Utils.getListFeedBundle(mFeed, position));
-            startActivity(myIntent);
+            Intent intent = new Intent(FeedActivity.this, DetailFeedActivity.class);
+            intent.putExtras(Utils.getListFeedBundle(mFeed, position));
+            startActivity(intent);
             overridePendingTransition(R.anim.activity_in, R.anim.activity_out);
 
         }
 
-    }
-
-    @Override
-    public void overridePendingTransition(int enterAnim, int exitAnim) {
-        super.overridePendingTransition(enterAnim, exitAnim);
     }
 
     @Override
@@ -193,7 +194,7 @@ public class FeedActivity extends BaseActivity implements OnSocialMediaListener,
     public boolean onOptionsItemSelected(MenuItem item) {
         switch (item.getItemId()) {
             case R.id.action_refresh:
-                mModel.getFeedSocialMedia(SocialMediaType.INSTAGRAM);
+                mModel.refreshFeedSocialMedia(SocialMediaType.INSTAGRAM);
                 showProgressDialog(null, getString(R.string.prompt_downloading_feed));
                 return true;
 

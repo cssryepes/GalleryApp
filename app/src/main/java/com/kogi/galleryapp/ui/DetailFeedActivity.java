@@ -11,6 +11,7 @@ import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
 
+import com.kogi.galleryapp.GalleryApp;
 import com.kogi.galleryapp.R;
 import com.kogi.galleryapp.Utils;
 import com.kogi.galleryapp.domain.entities.Feed;
@@ -68,9 +69,14 @@ public class DetailFeedActivity extends BaseActivity implements OnFragmentIntera
     public void onItemSelected(int position, ImageQuality quality) {
         if (mPosition == position & quality.equals(ImageQuality.STANDARD)) {
             mPosition = position;
-            Intent myIntent = new Intent(DetailFeedActivity.this, WebActivity.class);
-            myIntent.putExtras(Utils.getFeedBundle(mFeed.get(position)));
-            startActivity(myIntent);
+
+            if (!GalleryApp.getInstance().isNetworkAvailable()) {
+                return;
+            }
+
+            Intent intent = new Intent(DetailFeedActivity.this, WebActivity.class);
+            intent.putExtras(Utils.getFeedBundle(mFeed.get(position)));
+            startActivity(intent);
             overridePendingTransition(R.anim.activity_in, R.anim.activity_out);
 
         } else {
@@ -103,10 +109,10 @@ public class DetailFeedActivity extends BaseActivity implements OnFragmentIntera
         overridePendingTransition(R.anim.activity_back_in, R.anim.activity_back_out);
     }
 
-    @Override
-    public void overridePendingTransition(int enterAnim, int exitAnim) {
-        super.overridePendingTransition(enterAnim, exitAnim);
-    }
+//    @Override
+//    public void overridePendingTransition(int enterAnim, int exitAnim) {
+//        super.overridePendingTransition(enterAnim, exitAnim);
+//    }
 
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
