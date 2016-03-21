@@ -5,6 +5,6 @@
 * Disk & MemCache.
 * IntentService.
 * ViewPager.
-* RecyclerView.
+* RecyclerView & CardView.
 * Material Design. 
 * Multilanguage support.
