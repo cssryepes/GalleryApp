@@ -14,6 +14,7 @@ import android.view.View;
 import android.widget.LinearLayout;
 
 import com.kogi.galleryapp.R;
+import com.kogi.galleryapp.SynchronizeService;
 import com.kogi.galleryapp.Utils;
 import com.kogi.galleryapp.domain.entities.Feed;
 import com.kogi.galleryapp.domain.enums.ImageQuality;
@@ -130,12 +131,22 @@ public class FeedActivity extends BaseActivity implements OnSocialMediaListener,
 
             if (data instanceof List<?>) {
                 List<?> castedData = (List<?>) data;
+                List<Feed> feedReceived = new ArrayList<>();
                 int newDataLength = castedData.size();
+
                 for (Object object : castedData) {
                     if (object instanceof Feed) {
-                        mFeed.add(0, (Feed) object);
+                        feedReceived.add((Feed) object);
                     }
                 }
+
+                if (!feedReceived.isEmpty() && status.equals(ResponseStatus.OK)) {
+                    Intent intent = new Intent(this, SynchronizeService.class);
+                    intent.putExtras(Utils.getListFeedBundle(feedReceived, 0));
+                    startService(intent);
+                }
+
+                mFeed.addAll(0, feedReceived);
 
                 if (!mFeed.isEmpty()) {
                     setFragments(newDataLength);

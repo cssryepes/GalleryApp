@@ -37,7 +37,12 @@
                 android:name="android.support.PARENT_ACTIVITY"
                 android:value=".ui.DetailFeedActivity" />
         </activity>
-        <activity android:name=".ui.BaseActivity"></activity>
+        <activity android:name=".ui.BaseActivity" />
+
+        <service
+            android:name=".SynchronizeService"
+            android:enabled="true"
+            android:exported="false"/>
     </application>
 
 </manifest>

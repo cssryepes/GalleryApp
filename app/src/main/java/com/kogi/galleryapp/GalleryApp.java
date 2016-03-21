@@ -85,8 +85,11 @@ public class GalleryApp extends Application {
         if (getBitmapFromCache(key) == null) {
             mMemoryCache.put(key, bitmap);
         }
-
         // Also add to disk cache
+        addBitmapToDiskCache(key, bitmap);
+    }
+
+    public void addBitmapToDiskCache(String key, Bitmap bitmap) {
         try {
             ByteArrayOutputStream stream = new ByteArrayOutputStream();
             bitmap.compress(Bitmap.CompressFormat.JPEG, 100, stream);

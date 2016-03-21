@@ -111,6 +111,9 @@ public class SocialMediaModel {
 
             Utils.print(Log.DEBUG, status.name());
             Utils.print(Log.DEBUG, mResponse);
+            if (feed != null) {
+                Utils.print(Log.DEBUG, "Feed Size: " + feed.size());
+            }
 
             sendDataListener(status, status.equals(ResponseStatus.ERROR) ? mResponse : feed);
 
