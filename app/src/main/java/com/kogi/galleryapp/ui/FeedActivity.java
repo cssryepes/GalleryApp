@@ -30,7 +30,22 @@ import com.kogi.galleryapp.ui.listeners.OnGridFragmentInteractionListener;
 import java.util.ArrayList;
 import java.util.List;
 
-public class FeedActivity extends BaseActivity implements OnSocialMediaListener, OnGridFragmentInteractionListener, OnFragmentInteractionListener {
+/**
+ * Actividad encargada de la visualizacion de la galeria usando PreviewFeedFragment & GridFeedFragment.
+ * Sirve como puente de interacción entre los fragments y el modelo.
+ *
+ * Eventos:
+ * - onRefreshGrid():
+ *      Disparado por el evento SwipeRefreshLayout del GridFeedFragment
+ * - onItemSelected(int position, ImageQuality quality):
+ *      Disparado por el evento OnClickListener de la vista del item del RecyclerView en GridFeedFragment.
+ *      Disparado por el evento OnClickListener de la vista del item del ViewPager en PreviewFeedFragment.
+ * - onSwipeItem(int position):
+ *      Disparado por el evento onPageSelected del PreviewFeedFragment.
+ *
+ */
+public class FeedActivity extends BaseActivity implements OnSocialMediaListener,
+        OnGridFragmentInteractionListener, OnFragmentInteractionListener {
 
     private List<Feed> mFeed;
     private SocialMediaModel mModel;
@@ -58,61 +73,19 @@ public class FeedActivity extends BaseActivity implements OnSocialMediaListener,
     }
 
     @Override
-    protected void onDestroy() {
-        super.onDestroy();
-        mModel.removeOnSocialMediaListener();
-    }
-
-    private void setFragments(int newDataLength) {
-        FragmentManager manager = getSupportFragmentManager();
-        FragmentTransaction transaction = manager.beginTransaction();
-
-        //Remove last fragment
-        Fragment fragment = manager.findFragmentByTag(getString(R.string.fragment_bottom));
-        if (fragment == null) {
-            //Add fragment
-            mGridFeedFragment = GridFeedFragment.newInstance(mFeed);
-            transaction.add(R.id.fragmentBottom, mGridFeedFragment, getString(R.string.fragment_bottom));
-
-        } else {
-            if (fragment instanceof GridFeedFragment) {
-                mGridFeedFragment = (GridFeedFragment) fragment;
-            }
-        }
-
-
-        fragment = manager.findFragmentByTag(getString(R.string.fragment_top));
-        if (fragment == null) {
-            //Add fragment
-            mPreviewFeedFragment = PreviewFeedFragment.newInstance(mFeed);
-            transaction.add(R.id.fragmentTop, mPreviewFeedFragment, getString(R.string.fragment_top)).commit();
-
-        } else {
-            if (fragment instanceof PreviewFeedFragment) {
-                mPreviewFeedFragment = (PreviewFeedFragment) fragment;
-            }
-        }
-
-        if (fragment != null) {
-            notifyDataSetChanged(newDataLength);
-        }
-    }
-
-    private void notifyDataSetChanged(int newDataLength) {
-        if (mPreviewFeedFragment != null) {
-            mPreviewFeedFragment.notifyDataSetChanged(newDataLength);
-        }
-        if (mGridFeedFragment != null) {
-            mGridFeedFragment.notifyDataSetChanged(newDataLength);
-            mGridFeedFragment.setRefreshLayout(false);
-        }
-    }
-
-    @Override
     public void onDataReceived(ResponseStatus status, Object data) {
 
         dismissDialog();
 
+        /**
+         * Del modelo recibo tanto el estado de la operacion como el dato.
+         * -    Si el estado es ERROR se muestra una advertencia.
+         * -    Si el estado es OK, se verifica que el dato sea un listado de feed. Se inicia el
+         *      servicio para la descarga de imagenes en segundo plano.
+         * -    Si el estado es NO_CONNECTION se chequea el dato.
+         *      -   Si el dato es String se despliega advertencia.
+         *      -   Si el dato es un listado (de la cache) se imprime en la cuadricula.
+         */
         if (status.equals(ResponseStatus.ERROR)) {
             showAlertDialog(getString(R.string.prompt_error), (String) data,
                     getString(R.string.prompt_ok));
@@ -137,12 +110,14 @@ public class FeedActivity extends BaseActivity implements OnSocialMediaListener,
                 List<Feed> feedReceived = new ArrayList<>();
                 int newDataLength = castedData.size();
 
+                // Se castea objeto por objeto
                 for (Object object : castedData) {
                     if (object instanceof Feed) {
                         feedReceived.add((Feed) object);
                     }
                 }
 
+                // Si el feed que llega es nuevo se lanza el servicio de actualizacion de imagenes
                 if (!feedReceived.isEmpty() && status.equals(ResponseStatus.OK)) {
                     Intent intent = new Intent(this, SynchronizeService.class);
                     intent.putExtras(Utils.getListFeedBundle(feedReceived, 0));
@@ -151,6 +126,7 @@ public class FeedActivity extends BaseActivity implements OnSocialMediaListener,
 
                 mFeed.addAll(0, feedReceived);
 
+                // Solo muestro los fragments si tengo al menos un feed
                 if (!mFeed.isEmpty()) {
                     setFragments(newDataLength);
                 }
@@ -159,6 +135,43 @@ public class FeedActivity extends BaseActivity implements OnSocialMediaListener,
         }
     }
 
+    /**
+     * Se envia la longitud de los nuevos datos, actualizando PreviewFeedFragment & GridFeedFragment
+     * si existen, de lo contrario crea nueva instancia de cada uno
+     */
+    private void setFragments(int newDataLength) {
+        FragmentManager manager = getSupportFragmentManager();
+        FragmentTransaction transaction = manager.beginTransaction();
+
+        Fragment fragment = manager.findFragmentByTag(getString(R.string.fragment_bottom));
+        if (fragment == null) {
+            mGridFeedFragment = GridFeedFragment.newInstance(mFeed);
+            transaction.add(R.id.fragmentBottom, mGridFeedFragment, getString(R.string.fragment_bottom));
+        }
+
+        fragment = manager.findFragmentByTag(getString(R.string.fragment_top));
+        if (fragment == null) {
+            mPreviewFeedFragment = PreviewFeedFragment.newInstance(mFeed);
+            transaction.add(R.id.fragmentTop, mPreviewFeedFragment, getString(R.string.fragment_top)).commit();
+        }
+
+        if (fragment != null) {
+            notifyDataSetChanged(newDataLength);
+        }
+    }
+
+    /**
+     * Notifica a cada fragment la nueva cantidad de datos
+     */
+    private void notifyDataSetChanged(int newDataLength) {
+        if (mPreviewFeedFragment != null) {
+            mPreviewFeedFragment.notifyDataSetChanged(newDataLength);
+        }
+        if (mGridFeedFragment != null) {
+            mGridFeedFragment.notifyDataSetChanged(newDataLength);
+            mGridFeedFragment.setRefreshLayout(false);
+        }
+    }
 
     @Override
     public void onRefreshGrid() {
@@ -174,6 +187,9 @@ public class FeedActivity extends BaseActivity implements OnSocialMediaListener,
 
     @Override
     public void onItemSelected(int position, ImageQuality quality) {
+
+        // GridFeedFragment - imagenes calidad THUMBNAIL
+        // PreviewFeedFragment - imagenes calidad LOW
         if (quality.equals(ImageQuality.THUMBNAIL)) {
             if (mPreviewFeedFragment != null) {
                 mPreviewFeedFragment.showFeed(position);
@@ -183,7 +199,7 @@ public class FeedActivity extends BaseActivity implements OnSocialMediaListener,
             Intent intent = new Intent(FeedActivity.this, DetailFeedActivity.class);
             intent.putExtras(Utils.getListFeedBundle(mFeed, position));
             startActivity(intent);
-            overridePendingTransition(R.anim.activity_in, R.anim.activity_out);
+            startSlideAnimation(true);
 
         }
 
@@ -194,6 +210,12 @@ public class FeedActivity extends BaseActivity implements OnSocialMediaListener,
         if (mGridFeedFragment != null) {
             mGridFeedFragment.showFeed(position);
         }
+    }
+
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+        mModel.removeOnSocialMediaListener();
     }
 
     @Override

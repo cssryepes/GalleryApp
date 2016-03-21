@@ -17,10 +17,16 @@ import org.json.JSONObject;
 import java.io.IOException;
 import java.util.List;
 
+/**
+ * Modelo encargado de la descarga y guardado en chache del feed
+ */
 public class SocialMediaModel {
 
     private OnSocialMediaListener mListener;
 
+    /**
+     * Solo se permite instanciar el modelo si hay un listener vinculado
+     */
     private SocialMediaModel() {
     }
 
@@ -34,12 +40,14 @@ public class SocialMediaModel {
 
     public void getFeedSocialMedia(SocialMediaType type) {
 //            if (type == SocialMediaType.INSTAGRAM)
-        new DownloadFeed(false).execute("https://api.instagram.com/v1/media/popular", "client_id", "05132c49e9f148ec9b8282af33f88ac7");
+        new DownloadFeed(false).execute("https://api.instagram.com/v1/media/popular",
+                "client_id", "05132c49e9f148ec9b8282af33f88ac7");
 
     }
 
     public void refreshFeedSocialMedia(SocialMediaType type) {
-        new DownloadFeed(true).execute("https://api.instagram.com/v1/media/popular", "client_id", "05132c49e9f148ec9b8282af33f88ac7");
+        new DownloadFeed(true).execute("https://api.instagram.com/v1/media/popular",
+                "client_id", "05132c49e9f148ec9b8282af33f88ac7");
 
     }
 
@@ -73,6 +81,11 @@ public class SocialMediaModel {
                     return ResponseStatus.ERROR;
                 }
             } else {
+                /**
+                 * En caso tal de que no haya conexion, se trae el JSON del cache. Esto solo aplica
+                 * si es la primera vez que se descarga, esto para evitar la duplicidad de contenido
+                 * cuando se refresca el feed
+                 */
                 mResponse = app.getJSONFromCache(url);
                 if (mResponse == null || mRefresh) {
                     mResponse = app.getString(R.string.prompt_no_connectivity);
@@ -115,6 +128,10 @@ public class SocialMediaModel {
                 Utils.print(Log.DEBUG, "Feed Size: " + feed.size());
             }
 
+            /**
+             * El modelo puede responder un mensaje de ERROR/CONECTIVIDAD o el listado, dependiendo
+             * del momento que se invoque
+             */
             sendDataListener(status, status.equals(ResponseStatus.ERROR) ? mResponse : feed);
 
         }

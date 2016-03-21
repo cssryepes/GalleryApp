@@ -11,6 +11,9 @@ import android.support.v7.app.AlertDialog;
 import com.kogi.galleryapp.Utils;
 import com.kogi.galleryapp.ui.listeners.OnDialogInteractionListener;
 
+/**
+ * Fragment para el manejo de los popup
+ */
 public class GalleryDialogFragment extends DialogFragment {
 
     public static final int STYLE_PROGRESS = 0;
@@ -23,7 +26,6 @@ public class GalleryDialogFragment extends DialogFragment {
     private String mTitle;
     private String mMessage;
     private String mButton;
-
 
     public static GalleryDialogFragment newProgressDialog(String title, String message) {
         GalleryDialogFragment fragment = new GalleryDialogFragment();

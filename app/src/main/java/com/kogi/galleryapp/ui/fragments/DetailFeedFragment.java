@@ -19,6 +19,10 @@ import com.viewpagerindicator.CirclePageIndicator;
 
 import java.util.List;
 
+/**
+ * Fragment encargado de presentar el detalle del feed (fecha de publicacion, autor, tags,
+ * imagen estandar) con opcion de mostrar la pagina web y recorrer el resto de la galeria
+ */
 public class DetailFeedFragment extends Fragment implements ViewPager.OnPageChangeListener {
 
     private OnFragmentInteractionListener mListener;

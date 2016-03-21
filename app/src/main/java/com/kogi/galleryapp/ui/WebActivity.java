@@ -18,6 +18,9 @@ import com.kogi.galleryapp.Utils;
 import com.kogi.galleryapp.domain.entities.Feed;
 import com.kogi.galleryapp.ui.listeners.OnDialogInteractionListener;
 
+/**
+ * Actividad encargada de presentar la pagina web del feed con opcion de compartir el enlace
+ */
 public class WebActivity extends BaseActivity implements OnDialogInteractionListener {
 
     private Feed mFeed;
@@ -42,6 +45,7 @@ public class WebActivity extends BaseActivity implements OnDialogInteractionList
             mActionBar.setTitle(mFeed.getLink());
         }
 
+        //Solo si tiene acceso a internet se muestra el contenido de la actividad
         if (!GalleryApp.getInstance().isNetworkAvailable()) {
             showAlertDialog(getString(R.string.prompt_error), getString(R.string.prompt_no_connectivity),
                     getString(R.string.prompt_back));
@@ -81,7 +85,7 @@ public class WebActivity extends BaseActivity implements OnDialogInteractionList
         switch (item.getItemId()) {
             case android.R.id.home:
                 finish();
-                overridePendingTransition(R.anim.activity_back_in, R.anim.activity_back_out);
+                startSlideAnimation(false);
                 return true;
 
             case R.id.action_share:
@@ -97,7 +101,7 @@ public class WebActivity extends BaseActivity implements OnDialogInteractionList
     @Override
     public void onBackPressed() {
         super.onBackPressed();
-        overridePendingTransition(R.anim.activity_back_in, R.anim.activity_back_out);
+        startSlideAnimation(false);
     }
 
 
@@ -105,7 +109,7 @@ public class WebActivity extends BaseActivity implements OnDialogInteractionList
     public void onPositiveButtonClicked() {
         super.onPositiveButtonClicked();
         finish();
-        overridePendingTransition(R.anim.activity_back_in, R.anim.activity_back_out);
+        startSlideAnimation(false);
     }
 
 }

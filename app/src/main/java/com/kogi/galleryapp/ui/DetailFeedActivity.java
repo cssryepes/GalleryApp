@@ -22,6 +22,10 @@ import com.kogi.galleryapp.ui.listeners.OnFragmentInteractionListener;
 
 import java.util.List;
 
+/**
+ * Actividad encargada de albergar DetailFeedFragment quien administra el detalle de la galeria.
+ * Cuenta con opcion de compartir el enlace de la imagen que se muestra y acceder a su pagina web.
+ */
 public class DetailFeedActivity extends BaseActivity implements OnFragmentInteractionListener {
 
     private List<Feed> mFeed;
@@ -44,6 +48,8 @@ public class DetailFeedActivity extends BaseActivity implements OnFragmentIntera
 
         Fragment fragment = manager.findFragmentByTag(getString(R.string.fragment_full));
         if (fragment == null) {
+
+            // DetailFeedFragment se encarga de toda la presentacion y administracion de la galeria
             DetailFeedFragment detail = DetailFeedFragment.newInstance(mFeed, mPosition);
             transaction.add(R.id.full_fragment, detail, getString(R.string.fragment_full));
             transaction.commit();
@@ -61,15 +67,13 @@ public class DetailFeedActivity extends BaseActivity implements OnFragmentIntera
     }
 
     @Override
-    protected void onResume() {
-        super.onResume();
-    }
-
-    @Override
     public void onItemSelected(int position, ImageQuality quality) {
+
+        // Se chequea si se da click a la imagen en la que esta posicionada la galeria
         if (mPosition == position & quality.equals(ImageQuality.STANDARD)) {
             mPosition = position;
 
+            // Si se tiene conexion a internet se viaja a WebActivity
             if (!GalleryApp.getInstance().isNetworkAvailable()) {
                 return;
             }
@@ -77,9 +81,11 @@ public class DetailFeedActivity extends BaseActivity implements OnFragmentIntera
             Intent intent = new Intent(DetailFeedActivity.this, WebActivity.class);
             intent.putExtras(Utils.getFeedBundle(mFeed.get(position)));
             startActivity(intent);
-            overridePendingTransition(R.anim.activity_in, R.anim.activity_out);
+            startSlideAnimation(true);
 
         } else {
+            // Cuando DetailFeedFragment cambia de imagen mostrada, se debe cambiar el
+            // texto del toolbar
             mPosition = position;
             if (mActionBar != null) {
                 mActionBar.setTitle(mFeed.get(mPosition).getCaption());
@@ -106,21 +112,15 @@ public class DetailFeedActivity extends BaseActivity implements OnFragmentIntera
     @Override
     public void onBackPressed() {
         super.onBackPressed();
-        overridePendingTransition(R.anim.activity_back_in, R.anim.activity_back_out);
+        startSlideAnimation(false);
     }
-
-//    @Override
-//    public void overridePendingTransition(int enterAnim, int exitAnim) {
-//        super.overridePendingTransition(enterAnim, exitAnim);
-//    }
 
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
         switch (item.getItemId()) {
             case android.R.id.home:
-//                NavUtils.navigateUpFromSameTask(this);
                 finish();
-                overridePendingTransition(R.anim.activity_back_in, R.anim.activity_back_out);
+                startSlideAnimation(true);
                 return true;
 
             case R.id.action_share:

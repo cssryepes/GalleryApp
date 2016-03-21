@@ -12,11 +12,19 @@ import com.kogi.galleryapp.domain.enums.ResponseStatus;
 
 import java.util.List;
 
+/**
+ * Proceso encargado de la actualizacion del bitmap e imageview del ViewHolder que se le pasa
+ * como parametro.
+ */
 public class DownloadImage extends AsyncTask<ViewHolder, Void, ViewHolder> {
     private ResponseStatus status;
 
     @Override
     protected ViewHolder doInBackground(ViewHolder... params) {
+        /**
+         * Se obtiene del feed la imagen de la calidad seleccionada y se hace el proceso de descarga de la
+         * imagen si aun no esta en la cachey  luego la almacena alli.
+         */
         try {
             List<Image> images = params[0].mFeed.getImages();
             for (Image image : images) {
@@ -27,12 +35,12 @@ public class DownloadImage extends AsyncTask<ViewHolder, Void, ViewHolder> {
 
                     if (bitmapFromCache != null) {
                         params[0].mBitmap = bitmapFromCache;
-
                     } else {
                         Utils.print(Log.DEBUG, "DownloadImage AsyncTask: " + image.getUrl());
                         params[0].mBitmap = HttpConnection.getBitmapFromURL(image.getUrl());
+                        // Ademas de guardarla en la cache del disco se hace la insercion en la
+                        // cache de memoria
                         app.addBitmapToCache(image.getUrl(), params[0].mBitmap);
-
                     }
 
                     status = ResponseStatus.OK;
@@ -47,14 +55,10 @@ public class DownloadImage extends AsyncTask<ViewHolder, Void, ViewHolder> {
     }
 
     @Override
-    protected void onPreExecute() {
-        super.onPreExecute();
-    }
-
-    @Override
     protected void onPostExecute(ViewHolder viewHolder) {
         super.onPostExecute(viewHolder);
 
+        // Pintamos el bitmap en el imageview
         if (status.equals(ResponseStatus.OK) && viewHolder.mBitmap != null) {
             viewHolder.mImageView.setImageBitmap(viewHolder.mBitmap);
             viewHolder.mView.invalidate();

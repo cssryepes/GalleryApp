@@ -5,7 +5,6 @@ import android.support.v4.view.PagerAdapter;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.ImageView;
 import android.widget.LinearLayout;
 
 import com.kogi.galleryapp.GalleryApp;
@@ -19,16 +18,15 @@ import com.kogi.galleryapp.ui.listeners.OnFragmentInteractionListener;
 
 import java.util.List;
 
+/**
+ * Adaptador encargado de la visualizacion del feed en pantalla. Este sirve a PreviewFeedFragment &
+ * DetailFeedFragment
+ */
 public class CustomPagerAdapter extends PagerAdapter {
     private final List<Feed> mFeed;
     private final LayoutInflater mLayoutInflater;
     private final OnFragmentInteractionListener mInteractionListener;
     private final ImageQuality mQuality;
-    private ImageView mImageView;
-
-    public ImageView getCurrentImageView() {
-        return mImageView;
-    }
 
     public CustomPagerAdapter(OnFragmentInteractionListener interactionListener, List<Feed> feed, ImageQuality quality) {
         mInteractionListener = interactionListener;
@@ -44,23 +42,24 @@ public class CustomPagerAdapter extends PagerAdapter {
 
     @Override
     public boolean isViewFromObject(View view, Object object) {
-        return view == ((LinearLayout) object);
+        return view == object;
     }
 
     @Override
     public Object instantiateItem(ViewGroup container, final int position) {
         View itemView;
+
+        // STANDARD - DetailFeedFragment
+        // LOW - PreviewFeedFragment
         if (mQuality.equals(ImageQuality.STANDARD)) {
             itemView = mLayoutInflater.inflate(R.layout.feed_pager_item_standard_quality, container, false);
         } else {
             itemView = mLayoutInflater.inflate(R.layout.feed_pager_item_low_quality, container, false);
-
         }
 
         Feed feed = mFeed.get(position);
 
         ViewHolder holder = new ViewHolder(itemView);
-//        holder.mImageView.setImageResource(R.mipmap.ic_launcher);
         holder.mFeed = feed;
         holder.mQuality = mQuality;
         holder.mImageView.setOnClickListener(new View.OnClickListener() {
@@ -72,8 +71,7 @@ public class CustomPagerAdapter extends PagerAdapter {
             }
         });
 
-        mImageView = holder.mImageView;
-
+        // Si es calidad STANDAR agregamos el resto de datos en pantalla
         if (mQuality.equals(ImageQuality.STANDARD)) {
             StringBuilder sb = new StringBuilder();
             List<String> tags = feed.getTags();
@@ -89,6 +87,7 @@ public class CustomPagerAdapter extends PagerAdapter {
                 holder.mAuthor.setText(feed.getUser().getUsername());
         }
 
+        // Ejecutamos el proceso de actualizacion del viewholder
         new DownloadImage().execute(holder);
 
         container.addView(itemView);

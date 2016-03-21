@@ -7,15 +7,18 @@ import android.view.ViewGroup;
 import android.widget.LinearLayout;
 
 import com.kogi.galleryapp.R;
-import com.kogi.galleryapp.ui.helpers.DownloadImage;
 import com.kogi.galleryapp.domain.entities.Feed;
 import com.kogi.galleryapp.domain.entities.Image;
 import com.kogi.galleryapp.domain.enums.ImageQuality;
+import com.kogi.galleryapp.ui.helpers.DownloadImage;
 import com.kogi.galleryapp.ui.helpers.ViewHolder;
 import com.kogi.galleryapp.ui.listeners.OnFragmentInteractionListener;
 
 import java.util.List;
 
+/**
+ * Adaptador encargado de la visualizacion de la lista de feed en el RecyclerView de GridFeedFragment
+ */
 public class GridRecyclerViewAdapter extends RecyclerView.Adapter<ViewHolder> {
 
     private final List<Feed> mFeed;
@@ -40,11 +43,17 @@ public class GridRecyclerViewAdapter extends RecyclerView.Adapter<ViewHolder> {
         holder.mView.setSelected(selectedPosition == position);
         holder.mFeed = mFeed.get(position);
         holder.mContentView.setText(mFeed.get(position).getCaption());
+
+        /**
+         * Siempre se limpia el imageview para no mostrar la imagen anterior que tenía el viewholder
+         */
         holder.mImageView.setImageResource(R.drawable.ic_photo_library_white_48dp);
         holder.mQuality = ImageQuality.THUMBNAIL;
+
         List<Image> images = holder.mFeed.getImages();
         for (Image image : images) {
             if (image.getQuality().equals(ImageQuality.THUMBNAIL)) {
+                // Obtengo de la imagen el ancho y el alto para modificar el imageview
                 LinearLayout.LayoutParams layoutParams = new LinearLayout.LayoutParams(image.getWidth(), image.getHeight());
                 holder.mImageView.setLayoutParams(layoutParams);
             }

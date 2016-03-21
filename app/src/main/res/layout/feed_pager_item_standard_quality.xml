@@ -16,17 +16,18 @@
             android:layout_weight="0"
             android:text="@string/publish_date"
             android:textColor="@color/colorAccent"
-            android:textSize="@dimen/fab_margin" />
+            android:textSize="@dimen/text_size" />
 
         <TextView
             android:id="@+id/publish_date"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_marginLeft="10dp"
+            android:layout_marginStart="10dp"
             android:layout_weight="1"
             android:text="@string/publish_date"
             android:textColor="@color/colorDark"
-            android:textSize="@dimen/fab_margin" />
+            android:textSize="@dimen/text_size" />
     </LinearLayout>
 
     <LinearLayout
@@ -40,17 +41,18 @@
             android:layout_weight="0"
             android:text="@string/author"
             android:textColor="@color/colorAccent"
-            android:textSize="@dimen/fab_margin" />
+            android:textSize="@dimen/text_size" />
 
         <TextView
             android:id="@+id/author"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_marginLeft="10dp"
+            android:layout_marginStart="10dp"
             android:layout_weight="1"
             android:text="@string/author"
             android:textColor="@color/colorDark"
-            android:textSize="@dimen/fab_margin" />
+            android:textSize="@dimen/text_size" />
     </LinearLayout>
 
     <LinearLayout
@@ -64,17 +66,18 @@
             android:layout_weight="0"
             android:text="@string/tag"
             android:textColor="@color/colorAccent"
-            android:textSize="@dimen/fab_margin" />
+            android:textSize="@dimen/text_size" />
 
         <TextView
             android:id="@+id/tag"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_marginLeft="10dp"
+            android:layout_marginStart="10dp"
             android:layout_weight="1"
             android:text="@string/tag"
             android:textColor="@color/colorDark"
-            android:textSize="@dimen/fab_margin" />
+            android:textSize="@dimen/text_size" />
     </LinearLayout>
 
     <ImageView
@@ -82,5 +85,6 @@
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:contentDescription="@string/preview"
+        android:scaleType="center"
         android:src="@drawable/ic_photo_library_white_48dp" />
 </LinearLayout>

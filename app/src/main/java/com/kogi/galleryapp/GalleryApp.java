@@ -16,10 +16,13 @@ import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.io.IOException;
 
+/**
+ * Cache manager
+ */
 public class GalleryApp extends Application {
 
     private static final long DISK_CACHE_SIZE = 1024 * 1024 * 10; // 10MB
-    private static final String DISK_CACHE_SUBDIR = "thumbnails";
+    private static final String DISK_CACHE_SUBDIRECTORY = "GalleryApp";
 
     private static GalleryApp instance = null;
     private LruCache<String, Bitmap> mMemoryCache;
@@ -34,26 +37,29 @@ public class GalleryApp extends Application {
         super.onCreate();
         instance = this;
 
-        // Get max available VM memory, exceeding this amount will throw an
-        // OutOfMemory exception. Stored in kilobytes as LruCache takes an
-        // int in its constructor.
+        /**
+         * Cache de memoria
+         */
+        // Obtenemos el maximo de memoria disponible en la VM, si se excede esta cantidad se
+        // generara un OutOfMemory exception. Medida en kilobytes
         final int maxMemory = (int) (Runtime.getRuntime().maxMemory() / 1024);
 
-        // Use 1/8th of the available memory for this memory cache.
+        //Solo usamos 1/8 de la memoria disponible para el cache en memoria
         final int cacheSize = maxMemory / 8;
 
         mMemoryCache = new LruCache<String, Bitmap>(cacheSize) {
             @Override
             protected int sizeOf(String key, Bitmap bitmap) {
-                // The cache size will be measured in kilobytes rather than
-                // number of items.
+                 //El tamaño de la cache es medida en kilobytes
                 return bitmap.getByteCount() / 1024;
             }
         };
 
+        /**
+         * Cache de disco
+         */
         try {
-            // Initialize disk cache on background thread
-            File cacheDir = getDiskCacheDir(this, DISK_CACHE_SUBDIR);
+            File cacheDir = getDiskCacheDir(this, DISK_CACHE_SUBDIRECTORY);
             mDiskCache = DiskCache.open(cacheDir, 1, DISK_CACHE_SIZE);
         } catch (IOException e) {
             Utils.print(Log.ERROR, Utils.getStackTrace(e));
@@ -61,34 +67,41 @@ public class GalleryApp extends Application {
 
     }
 
-    // Creates a unique subdirectory of the designated app cache directory. Tries to use external
-// but if not mounted, falls back on internal storage.
+    /**
+     * Crea un subdirectorio destinado para el cache de la aplicacion. Primero se busca alojar en
+     * el almacenamiento externo, si no se encuentra se hace sobre el interno.
+     */
     private File getDiskCacheDir(Context context, String uniqueName) {
-        // Check if media is mounted or storage is built-in, if so, try and use external cache dir
-        // otherwise use internal cache dir
         final String cachePath =
                 Environment.MEDIA_MOUNTED.equals(Environment.getExternalStorageState()) ||
-                        !Environment.isExternalStorageRemovable() ? GalleryApp.getInstance().getExternalCacheDir().getPath() :
+                        !Environment.isExternalStorageRemovable() ? getExternalCacheDir().getPath() :
                         context.getCacheDir().getPath();
 
         return new File(cachePath + File.separator + uniqueName);
     }
 
+    /**
+     * Revision del estado de conectividad.
+     */
     public boolean isNetworkAvailable() {
         ConnectivityManager cm = (ConnectivityManager) getSystemService(Context.CONNECTIVITY_SERVICE);
         NetworkInfo netInfo = cm.getActiveNetworkInfo();
-
         return netInfo != null && netInfo.isConnectedOrConnecting();
     }
 
+    /**
+     * Guarda un bitmap en cache, primero lo hace en memoria, luego en disco.
+     */
     public void addBitmapToCache(String key, Bitmap bitmap) {
         if (getBitmapFromCache(key) == null) {
             mMemoryCache.put(key, bitmap);
         }
-        // Also add to disk cache
         addBitmapToDiskCache(key, bitmap);
     }
 
+    /**
+     * Guardar bitmap en cache de disco.
+     */
     public void addBitmapToDiskCache(String key, Bitmap bitmap) {
         try {
             ByteArrayOutputStream stream = new ByteArrayOutputStream();
@@ -99,6 +112,9 @@ public class GalleryApp extends Application {
         }
     }
 
+    /**
+     * Obtener bitmap de la cache. Primero busca en la memoria, si no lo encuentra busca en el disco
+     */
     public Bitmap getBitmapFromCache(String key) {
         Bitmap bitmap = mMemoryCache.get(key);
         if (bitmap == null) {
@@ -114,7 +130,9 @@ public class GalleryApp extends Application {
         return bitmap;
     }
 
-
+    /**
+     * Guardar String en la cache de disco
+     */
     public void addJSONToCache(String key, String json) {
         try {
             mDiskCache.put(key, json);
@@ -123,6 +141,9 @@ public class GalleryApp extends Application {
         }
     }
 
+    /**
+     * Obtener String de la cache
+     */
     public String getJSONFromCache(String key) {
         try {
             DiskCache.StringEntry entry = mDiskCache.getString(key);

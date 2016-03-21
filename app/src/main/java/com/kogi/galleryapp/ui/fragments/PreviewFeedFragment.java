@@ -18,6 +18,9 @@ import com.kogi.galleryapp.ui.listeners.OnFragmentInteractionListener;
 
 import java.util.List;
 
+/**
+ * Fragment para la presentacion de la vista previa del feed seleccionado
+ */
 public class PreviewFeedFragment extends Fragment implements ViewPager.OnPageChangeListener {
 
     private OnFragmentInteractionListener mListener;
@@ -28,16 +31,22 @@ public class PreviewFeedFragment extends Fragment implements ViewPager.OnPageCha
     public PreviewFeedFragment() {
     }
 
+    /**
+     * Le notifica al adaptador que el listado del feed ha cambiado y ademas se envia la nueva
+     * posicion del viewpager (conservar el focus en el feed seleccionado despues de refrescar
+     * la galeria)
+     */
     public void notifyDataSetChanged(int newDataLength) {
         mCustomPagerAdapter.notifyDataSetChanged();
         mViewPager.setCurrentItem(mViewPager.getCurrentItem() + newDataLength);
     }
 
+    /**
+     * Desplaza la galeria a la posicion deseada
+     */
     public void showFeed(int position) {
         if (mViewPager != null) {
             mViewPager.setCurrentItem(position, true);
-            // TODO REVISAR BUG DEL ESTADO VIEWPAGER Y GRIDRECYCLER DESPUES DEL PULLREFRESH
-//            mCustomPagerAdapter.notifyDataSetChanged();
         }
     }
 
@@ -95,7 +104,6 @@ public class PreviewFeedFragment extends Fragment implements ViewPager.OnPageCha
     public void onPageSelected(int position) {
         if (mListener != null) {
             mListener.onSwipeItem(position);
-//            mListener.onItemSelected(position, ImageQuality.LOW);
         }
     }
 

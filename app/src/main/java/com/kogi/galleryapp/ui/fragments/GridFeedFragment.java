@@ -4,8 +4,8 @@ import android.content.Context;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v4.widget.SwipeRefreshLayout;
-import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.support.v7.widget.StaggeredGridLayoutManager;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -19,13 +19,22 @@ import com.kogi.galleryapp.ui.listeners.OnGridFragmentInteractionListener;
 
 import java.util.List;
 
+/**
+ * Fragment para la visualizacion del listado de feed. Implementa SwipeRefreshLayout.OnRefreshListener
+ * que notifica a la actividad del evento de refrescar.
+ *
+ * Como vista de item se tiene implementado CardView, por lo que el RecyclerView solo acepta
+ * StaggeredGridLayoutManager y LinearLayoutManager para su visualizacion. En caso de que se desee
+ * ver como GridLayoutManager se debe cambiar esta vista.
+ *
+ */
 public class GridFeedFragment extends Fragment implements SwipeRefreshLayout.OnRefreshListener {
 
     private OnGridFragmentInteractionListener mGridListener;
     private OnFragmentInteractionListener mInteractionListener;
     private RecyclerView mRecyclerView;
     private GridRecyclerViewAdapter mGridRecyclerViewAdapter;
-    private GridLayoutManager mGridLayoutManager;
+    private StaggeredGridLayoutManager mGridLayoutManager;
     private SwipeRefreshLayout mSwipeRefreshLayout;
     private List<Feed> mFeed;
 
@@ -36,6 +45,9 @@ public class GridFeedFragment extends Fragment implements SwipeRefreshLayout.OnR
         mGridRecyclerViewAdapter.notifyDataSetChanged();
     }
 
+    /**
+     * Transporta la lista a la posicion deseada.
+     */
     public void showFeed(int position) {
         if (mGridLayoutManager != null) {
             int positionTemp = mGridRecyclerViewAdapter.selectedPosition;
@@ -69,14 +81,14 @@ public class GridFeedFragment extends Fragment implements SwipeRefreshLayout.OnR
                              Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.fragment_feed_grid, container, false);
 
-        // Set the adapter
         if (view instanceof SwipeRefreshLayout) {
-            Context context = view.getContext();
             mGridRecyclerViewAdapter = new GridRecyclerViewAdapter(mFeed, mInteractionListener);
-            mGridLayoutManager = new GridLayoutManager(context, 4);
+            mGridLayoutManager = new StaggeredGridLayoutManager(3, StaggeredGridLayoutManager.VERTICAL);
+
             mRecyclerView = (RecyclerView) view.findViewById(R.id.list);
             mRecyclerView.setLayoutManager(mGridLayoutManager);
             mRecyclerView.setAdapter(mGridRecyclerViewAdapter);
+            mRecyclerView.setHasFixedSize(true);
 
             mSwipeRefreshLayout = (SwipeRefreshLayout) view;
             mSwipeRefreshLayout.setOnRefreshListener(this);

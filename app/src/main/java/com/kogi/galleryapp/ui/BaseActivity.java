@@ -8,6 +8,9 @@ import com.kogi.galleryapp.R;
 import com.kogi.galleryapp.ui.fragments.GalleryDialogFragment;
 import com.kogi.galleryapp.ui.listeners.OnDialogInteractionListener;
 
+/**
+ * Actividad padre para facilitar el uso de los popup y las animaciones
+ */
 public class BaseActivity extends AppCompatActivity implements OnDialogInteractionListener {
 
     private GalleryDialogFragment mDialogFragment;
@@ -19,15 +22,25 @@ public class BaseActivity extends AppCompatActivity implements OnDialogInteracti
     }
 
     protected void showAlertDialog(String title, String message, String button) {
-        dismissDialog();
-        mDialogFragment = GalleryDialogFragment.newAlertDialog(title, message, button);
-        mDialogFragment.show(getSupportFragmentManager(), getString(R.string.fragment_dialog));
+        showDialogFragment(GalleryDialogFragment.STYLE_ALERT, title, message, button);
     }
 
     protected void showProgressDialog(String title, String message) {
+        showDialogFragment(GalleryDialogFragment.STYLE_PROGRESS, title, message, null);
+    }
+
+    private void showDialogFragment(int style, String title, String message, String button) {
         dismissDialog();
-        mDialogFragment = GalleryDialogFragment.newProgressDialog(title, message);
-        mDialogFragment.show(getSupportFragmentManager(), getString(R.string.fragment_dialog));
+
+        if (style == GalleryDialogFragment.STYLE_ALERT) {
+            mDialogFragment = GalleryDialogFragment.newAlertDialog(title, message, button);
+        } else if (style == GalleryDialogFragment.STYLE_PROGRESS) {
+            mDialogFragment = GalleryDialogFragment.newProgressDialog(title, message);
+        }
+
+        if (mDialogFragment != null) {
+            mDialogFragment.show(getSupportFragmentManager(), getString(R.string.fragment_dialog));
+        }
     }
 
     protected void shareContent(String text) {
@@ -41,6 +54,14 @@ public class BaseActivity extends AppCompatActivity implements OnDialogInteracti
     protected void dismissDialog() {
         if (mDialogFragment != null) {
             mDialogFragment.dismiss();
+        }
+    }
+
+    protected void startSlideAnimation(boolean entering) {
+        if (entering) {
+            overridePendingTransition(R.anim.activity_in, R.anim.activity_out);
+        } else {
+            overridePendingTransition(R.anim.activity_back_in, R.anim.activity_back_out);
         }
     }
 
