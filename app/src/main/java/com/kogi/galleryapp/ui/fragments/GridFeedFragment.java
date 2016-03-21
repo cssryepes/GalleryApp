@@ -21,31 +21,30 @@ import java.util.List;
 
 public class GridFeedFragment extends Fragment implements SwipeRefreshLayout.OnRefreshListener {
 
-    private int mColumnCount = 3;
     private OnGridFragmentInteractionListener mGridListener;
     private OnFragmentInteractionListener mInteractionListener;
-    private RecyclerView recyclerView;
-    private GridRecyclerViewAdapter gridRecyclerViewAdapter;
-    private GridLayoutManager gridLayoutManager;
-    private SwipeRefreshLayout swipeRefreshLayout;
+    private RecyclerView mRecyclerView;
+    private GridRecyclerViewAdapter mGridRecyclerViewAdapter;
+    private GridLayoutManager mGridLayoutManager;
+    private SwipeRefreshLayout mSwipeRefreshLayout;
     private List<Feed> mFeed;
 
     public GridFeedFragment() {
     }
 
     public void notifyDataSetChanged(int newDataLength) {
-        gridRecyclerViewAdapter.notifyDataSetChanged();
+        mGridRecyclerViewAdapter.notifyDataSetChanged();
     }
 
     public void showFeed(int position) {
-        if (gridLayoutManager != null) {
-            int positionTemp = gridRecyclerViewAdapter.selectedPosition;
-            gridRecyclerViewAdapter.selectedPosition = position;
-            gridRecyclerViewAdapter.notifyItemChanged(positionTemp);
-            gridRecyclerViewAdapter.notifyItemChanged(position);
+        if (mGridLayoutManager != null) {
+            int positionTemp = mGridRecyclerViewAdapter.selectedPosition;
+            mGridRecyclerViewAdapter.selectedPosition = position;
+            mGridRecyclerViewAdapter.notifyItemChanged(positionTemp);
+            mGridRecyclerViewAdapter.notifyItemChanged(position);
 
-            gridLayoutManager.scrollToPosition(position);
-            gridLayoutManager.smoothScrollToPosition(recyclerView,
+            mGridLayoutManager.scrollToPosition(position);
+            mGridLayoutManager.smoothScrollToPosition(mRecyclerView,
                     new RecyclerView.State(), position);
         }
     }
@@ -73,14 +72,14 @@ public class GridFeedFragment extends Fragment implements SwipeRefreshLayout.OnR
         // Set the adapter
         if (view instanceof SwipeRefreshLayout) {
             Context context = view.getContext();
-            gridRecyclerViewAdapter = new GridRecyclerViewAdapter(mFeed, mInteractionListener);
-            gridLayoutManager = new GridLayoutManager(context, mColumnCount);
-            recyclerView = (RecyclerView) view.findViewById(R.id.list);
-            recyclerView.setLayoutManager(gridLayoutManager);
-            recyclerView.setAdapter(gridRecyclerViewAdapter);
+            mGridRecyclerViewAdapter = new GridRecyclerViewAdapter(mFeed, mInteractionListener);
+            mGridLayoutManager = new GridLayoutManager(context, 4);
+            mRecyclerView = (RecyclerView) view.findViewById(R.id.list);
+            mRecyclerView.setLayoutManager(mGridLayoutManager);
+            mRecyclerView.setAdapter(mGridRecyclerViewAdapter);
 
-            swipeRefreshLayout = (SwipeRefreshLayout) view;
-            swipeRefreshLayout.setOnRefreshListener(this);
+            mSwipeRefreshLayout = (SwipeRefreshLayout) view;
+            mSwipeRefreshLayout.setOnRefreshListener(this);
         }
         return view;
     }
@@ -110,7 +109,7 @@ public class GridFeedFragment extends Fragment implements SwipeRefreshLayout.OnR
     }
 
     public void setRefreshLayout(boolean refresh) {
-        swipeRefreshLayout.setRefreshing(refresh);
+        mSwipeRefreshLayout.setRefreshing(refresh);
     }
 
 }
