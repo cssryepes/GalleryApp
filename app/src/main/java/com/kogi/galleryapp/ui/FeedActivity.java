@@ -116,6 +116,9 @@ public class FeedActivity extends BaseActivity implements OnSocialMediaListener,
         if (status.equals(ResponseStatus.ERROR)) {
             showAlertDialog(getString(R.string.prompt_error), (String) data,
                     getString(R.string.prompt_ok));
+            if (mGridFeedFragment != null) {
+                mGridFeedFragment.setRefreshLayout(false);
+            }
 
         } else if (status.equals(ResponseStatus.OK) || status.equals(ResponseStatus.NO_CONNECTION)) {
             if (status.equals(ResponseStatus.NO_CONNECTION)) {

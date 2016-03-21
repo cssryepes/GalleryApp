@@ -44,8 +44,6 @@ public class BaseActivity extends AppCompatActivity implements OnDialogInteracti
         }
     }
 
-
-
     @Override
     public void onPositiveButtonClicked() {
         dismissDialog();
